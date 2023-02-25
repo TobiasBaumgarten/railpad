@@ -1,0 +1,15 @@
+{
+  "name": "railpad",
+  "version": "0.0.1",
+  "description": "A Program to create a scheme of a Rail routing",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "serve": "npx parcel src/index.html"
+  },
+  "author": "Tobias Baumgarten",
+  "license": "MIT",
+  "devDependencies": {
+    "parcel": "^2.8.3"
+  }
+}
