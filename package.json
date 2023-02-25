@@ -11,5 +11,8 @@
   "license": "MIT",
   "devDependencies": {
     "parcel": "^2.8.3"
+  },
+  "dependencies": {
+    "semantic-ui-icon": "^2.5.0"
   }
 }

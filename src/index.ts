@@ -1,9 +1,9 @@
 import { PadStyle } from "./Pad/models";
 import Pad from "./Pad/Pad";
 
-const divpad = document.getElementById("pad");
+const divpad = document.getElementById("app");
 
-const darkTheme : PadStyle = {
+const darkTheme: PadStyle = {
     backgroundColor: "black",
     dotColor: "white",
     dotSelectColor: "yellow",
@@ -15,11 +15,16 @@ const darkTheme : PadStyle = {
     nodeLineGhost: "gray"
 }
 
-if (divpad != undefined) {
-    let pad = new Pad(divpad, document.body.scrollWidth, document.body.clientHeight);
-    pad.run(30);
-} else {
-    console.error("No pad div")
-}
+
+window.addEventListener("load", () => {
+    if (divpad != undefined) {
+        console.log()
+        let pad = new Pad(divpad);
+        pad.run(30);
+    } else {
+        console.error("No pad div")
+    }
+})
+
 
 

@@ -1,11 +1,11 @@
 import Camera from "./Camera";
 import GridDots from "./Sprites/GridDots";
 import Node from "./Sprites/Node";
-import { getMousePos } from "./helper";
 import { Input } from "./Input";
 import { Drawable, NodeState, PadStyle, Vector } from "./models";
 import Renderer from "./Renderer";
 import NodeWarden from "./Sprites/NodeWarden";
+import { ModeButtons, ModeButtonsState } from "./ModeButtons";
 
 const defaultStyle: PadStyle = {
     backgroundColor: "white",
@@ -33,7 +33,7 @@ export default class Pad {
     drawables: Drawable[];
     gridDots: GridDots;
     nodeWarden: NodeWarden;
-
+    modeButtons: ModeButtons;
 
 
     public get width(): number {
@@ -61,18 +61,28 @@ export default class Pad {
         this.renderer.padStyle = v;
     }
     
-    constructor(element: HTMLElement, width: number, height: number, style: PadStyle = defaultStyle) {
+    constructor(element: HTMLElement, style: PadStyle = defaultStyle) {
         this.nodes = [];
         this.parent = element;
         this.canvas = document.createElement("canvas");
         this.parent.appendChild(this.canvas);
+        this.canvas.id = "pad"
         this.ctx = this.canvas.getContext("2d")!;
         this.camera = new Camera(new Vector(0.4, 0));
         this.renderer = new Renderer(this.ctx, this.camera, style);
-        this.width = width;
-        this.height = height;
+        this.width = this.parent.clientWidth;
+        this.height = this.parent.clientHeight;
+        console.log(this.parent.clientHeight)
+        this.parent.addEventListener("resize", ev => {
+            this.width = this.parent.clientWidth;
+            this.height = this.parent.clientHeight;
+        })
         this.initDrawables();
         this.inputHandlers();
+        this.modeButtons = new ModeButtons(this.parent);
+        this.modeButtons.onChange.add((s,d) => {
+            console.log("TODO:", ModeButtonsState[d]);
+        })
     }
 
     private inputHandlers() {
@@ -130,6 +140,7 @@ export default class Pad {
     }
 
     private handleWheel(ev: WheelEvent) {
+        ev.preventDefault();
         const value = ev.deltaY > 1 ? 1 : -1;
         this.camera.zoom(value);
     }
@@ -156,5 +167,6 @@ export default class Pad {
         const milli = 1000 / ticks;
         setInterval(() => this.update(), milli);
     }
+
 
 }
