@@ -1,4 +1,4 @@
-import { Vector } from "./models";
+import { Vector } from "./Vector";
 
 export default class Camera {
     center: Vector;

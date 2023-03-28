@@ -2,10 +2,12 @@ import Camera from "./Camera";
 import GridDots from "./Sprites/GridDots";
 import Node from "./Sprites/Node";
 import { Input } from "./Input";
-import { Drawable, NodeState, PadStyle, Vector } from "./models";
+import { Drawable, PadStyle } from "./models";
 import Renderer from "./Renderer";
 import NodeWarden from "./Sprites/NodeWarden";
 import { ModeButtons, ModeButtonsState } from "./ModeButtons";
+import { Vector } from "./Vector";
+import { NodeMapController } from "./NodeMapController";
 
 const defaultStyle: PadStyle = {
     backgroundColor: "white",
@@ -17,15 +19,15 @@ const defaultStyle: PadStyle = {
     nodeLineBuild: "red",
     nodeLineBuilded: "green",
     nodeLineGhost: "gray",
-}
+};
 
 export default class Pad {
-    parent: HTMLElement
+    parent: HTMLElement;
     canvas: HTMLCanvasElement;
     ctx: CanvasRenderingContext2D;
     nodes: Node[];
     camera: Camera;
-    offsetNode: number = .00;
+    offsetNode: number = 0.0;
     input: Input;
     // style: PadStyle;
     lineColorMap: string[];
@@ -33,8 +35,8 @@ export default class Pad {
     drawables: Drawable[];
     gridDots: GridDots;
     nodeWarden: NodeWarden;
+    nodeMapController: NodeMapController;
     modeButtons: ModeButtons;
-
 
     public get width(): number {
         return this.canvas.width;
@@ -44,7 +46,6 @@ export default class Pad {
         this.camera.width = v;
     }
 
-
     public get height(): number {
         return this.canvas.height;
     }
@@ -53,36 +54,39 @@ export default class Pad {
         this.camera.height = v;
     }
 
-
-    public get style() : PadStyle {
+    public get style(): PadStyle {
         return this.renderer.padStyle;
     }
-    public set style(v : PadStyle) {
+    public set style(v: PadStyle) {
         this.renderer.padStyle = v;
     }
-    
+
     constructor(element: HTMLElement, style: PadStyle = defaultStyle) {
         this.nodes = [];
         this.parent = element;
         this.canvas = document.createElement("canvas");
         this.parent.appendChild(this.canvas);
-        this.canvas.id = "pad"
+        // this.canvas.id = "pad";
         this.ctx = this.canvas.getContext("2d")!;
         this.camera = new Camera(new Vector(0.4, 0));
         this.renderer = new Renderer(this.ctx, this.camera, style);
         this.width = this.parent.clientWidth;
         this.height = this.parent.clientHeight;
-        console.log(this.parent.clientHeight)
-        this.parent.addEventListener("resize", ev => {
+        new ResizeObserver(() => {
             this.width = this.parent.clientWidth;
             this.height = this.parent.clientHeight;
-        })
+        }).observe(this.parent);
         this.initDrawables();
         this.inputHandlers();
+        this.nodeMapController = new NodeMapController(this.nodeWarden);
         this.modeButtons = new ModeButtons(this.parent);
-        this.modeButtons.onChange.add((s,d) => {
+        this.modeButtons.onChange.add((s, d) => {
             console.log("TODO:", ModeButtonsState[d]);
-        })
+        });
+    }
+
+    public createMap(name:string) {
+        this.nodeMapController.createNewMap(name);
     }
 
     private inputHandlers() {
@@ -90,23 +94,28 @@ export default class Pad {
         this.input.onMove.add((gp) => this.handleMove(gp));
         this.input.onWheel.add((_, ev) => this.handleWheel(ev));
         this.input.onClick.add((ev) => this.handleClick(ev));
-        this.input.onMouseDown.add(ev => this.handleMouseDown(ev));
-        this.input.onMouseUp.add(ev => this.handleMouseUp(ev))
+        this.input.onMouseDown.add((ev) => this.handleMouseDown(ev));
+        this.input.onMouseUp.add((ev) => this.handleMouseUp(ev));
     }
 
-    private handleMouseUp(ev: MouseEvent): void {
-        if (ev.button == 0) { // right Mouse button
-            const selected = this.gridDots.selected();
-            if (selected && this.nodeWarden.activeCreation) {
-                this.nodeWarden.create(selected);
-            }
-            else if (this.nodeWarden.activeCreation) {
-                this.nodeWarden.reset();
-            }
+    //#region handleMouseDown
+
+    private handleMouseDown(ev: MouseEvent): void {
+        switch (this.modeButtons.state) {
+            case ModeButtonsState.edit:
+                this.handleMouseDownEditMode();
+                break;
+            case ModeButtonsState.delete:
+                break;
+            case ModeButtonsState.label:
+                break;
+
+            default: //view
+                break;
         }
     }
 
-    private handleMouseDown(ev: MouseEvent) {
+    private handleMouseDownEditMode() {
         if (this.input.isMouseLeftDown) {
             const selected = this.gridDots.selected();
             if (selected) {
@@ -116,27 +125,83 @@ export default class Pad {
         }
     }
 
-    private handleClick(ev: MouseEvent) {
+    //#endregion
 
+    //#region handleMouseUp
+
+    private handleMouseUp(ev: MouseEvent): void {
+        switch (this.modeButtons.state) {
+            case ModeButtonsState.edit:
+                this.handleMouseUpEditMode();
+                break;
+            case ModeButtonsState.delete:
+                break;
+            case ModeButtonsState.label:
+                break;
+
+            default: //view
+                break;
+        }
+        if (ev.button == 0) {
+            // right Mouse button
+        }
+    }
+
+    private handleMouseUpEditMode() {
+        const selected = this.gridDots.selected();
+        if (selected && this.nodeWarden.activeCreation) {
+            this.nodeWarden.create(selected);
+        } else if (this.nodeWarden.activeCreation) {
+            this.nodeWarden.resetCreate();
+        }
+    }
+
+    private handleClick(ev: MouseEvent) {
+        switch (this.modeButtons.state) {
+            case ModeButtonsState.edit:
+                // Nothing
+                break;
+            case ModeButtonsState.delete:
+                const selected = this.gridDots.selected();
+                if(selected) {
+                    // remove
+                    this.nodeWarden.remove(selected);
+                    console.log("Deke")
+                }
+                break;
+            case ModeButtonsState.label:
+                break;
+
+            default: //view
+                break;
+        }
     }
 
     private handleMove(ev: MouseEvent) {
-        // update the mouse position in GridDots
-        this.gridDots.mouseGridPosition = this.input.currentGridPos!;
-        // update the nodeWarden. He needs the information for the node creation process
-        const selected = this.gridDots.selected();
-        if (selected) this.nodeWarden.endCreate = selected;
-        else this.nodeWarden.endCreate = this.input.currentGridPos!;
-
-        // this.nodeWarden.endCreate = this.input.currentGridPos!;
-        // this.nodeWarden.outSideCreationAllowed = this.gridDots.isMouseOverDot;
+        // The camera movement
         if (this.input.isMouseRightDown) {
             this.camera.move(ev.movementX, ev.movementY);
         }
-        if (this.input.isMouseLeftDown) {
 
+        // update the mouse position in GridDots
+        this.gridDots.mouseGridPosition = this.input.currentGridPos!;
+
+        switch (this.modeButtons.state) {
+            case ModeButtonsState.edit:
+                // update the nodeWarden. He needs the information for the node creation process
+                const selected = this.gridDots.selected();
+                if (selected) this.nodeWarden.endCreate = selected;
+                else this.nodeWarden.endCreate = this.input.currentGridPos!;
+                break;
+
+            case ModeButtonsState.delete:
+                break;
+            case ModeButtonsState.label:
+                break;
+
+            default: //view
+                break;
         }
-
     }
 
     private handleWheel(ev: WheelEvent) {
@@ -152,11 +217,14 @@ export default class Pad {
     }
 
     private draw() {
+        //setup
+        this.gridDots.viewDots =
+            this.modeButtons.state != ModeButtonsState.view;
+        // draw
         this.renderer.clear(this.style.backgroundColor);
         this.nodeWarden.draw(this.renderer);
         this.gridDots.draw(this.renderer);
-        this.drawables.forEach(d => d.draw(this.renderer));
-
+        this.drawables.forEach((d) => d.draw(this.renderer));
     }
 
     public update() {
@@ -167,6 +235,4 @@ export default class Pad {
         const milli = 1000 / ticks;
         setInterval(() => this.update(), milli);
     }
-
-
 }

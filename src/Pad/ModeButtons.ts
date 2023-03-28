@@ -1,6 +1,6 @@
 import { Signal } from "./helper";
-const buttonClass = "ui button tiny";
-const buttonGroupClass = "ui buttons";
+const buttonClass = "btn btn-light btn-sm";
+const buttonGroupClass = "btn-group";
 const activeButton = "active";
 
 export enum ModeButtonsState {
@@ -40,7 +40,6 @@ export class ModeButtons {
     const icon = document.createElement("i");
     const names = name.split(" ");
     names.forEach((n) => icon.classList.add(n));
-    icon.classList.add("icon");
     return icon;
   }
 
@@ -68,19 +67,19 @@ export class ModeButtons {
     this.parent.appendChild(this.groupDiv);
 
     // edit button
-    this.editButton = this.createAButton("paint brush", ModeButtonsState.edit);
+    this.editButton = this.createAButton("fa-solid fa-pen", ModeButtonsState.edit);
     this.groupDiv.appendChild(this.editButton);
 
     // delete button
-    this.deleteButton = this.createAButton("trash", ModeButtonsState.delete);
+    this.deleteButton = this.createAButton("fa-solid fa-trash", ModeButtonsState.delete);
     this.groupDiv.appendChild(this.deleteButton);
 
     // label button
-    this.labelButton = this.createAButton("font", ModeButtonsState.label);
+    this.labelButton = this.createAButton("fa-solid fa-font", ModeButtonsState.label);
     this.groupDiv.appendChild(this.labelButton);
 
     // view button
-    this.viewButton = this.createAButton("eye", ModeButtonsState.view);
+    this.viewButton = this.createAButton("fa-solid fa-eye", ModeButtonsState.view);
     this.groupDiv.appendChild(this.viewButton);
   }
 

@@ -1,4 +1,21 @@
-☐ Nodes löschen
+Mouds Ebenen umsetzten:
+    ✔ Ebene Bearbeiten -> Anpassen @done(23-02-26 14:55)
+    ✔ Ebene Löschen -> Nodes Löschen @done(23-02-26 14:55)
+    ☐ Ebene Beschriften -> Automatisch erkennen ob Weiche, ?Kreuzung oder Gleis und dies "speichern".
+
+Sperrungen:
+    Eine Sperrung braucht
+    ☐ eine Start und eine Endzeit
+    ☐ einen Bereich -> Positionen (Vector)
+    ☐ kann Änderungen enthalten 
+        ☐ Gelöschte und-oder
+        ☐ neue Nodes
+        ☐ Änderungen müssen Sichtbar sein und dürfen sich nicht auf die Grundkarte auswirken.
+        Die Idee ist, dass der Nutzer eine Grund- oder Basiskarte erstellt. 
+        Eine Sperrung enthält dann Änderungen. Die Grundkarte und die vergangenen 
+        Sperrrungen übereinandergelegt ergeben dann die aktuelle Karte. Wird eine Sperrung
+        gelöscht, wird auch die Änderung gelöscht.
+
 ☐ Nodes speichern? -> Service / DI
-☐ Automatisch erkennen ob Weiche, Kreuzung oder Gleis und dies "speichern".
+
 ☐ Sperrung darstellen. Hierfür verwenden von einem Flag.

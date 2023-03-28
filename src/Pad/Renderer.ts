@@ -1,5 +1,6 @@
 import Camera from "./Camera";
-import { PadStyle, Vector } from "./models";
+import { PadStyle } from "./models";
+import { Vector } from "./Vector";
 
 export default class Renderer {
     ctx: CanvasRenderingContext2D;

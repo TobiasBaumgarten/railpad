@@ -2,17 +2,25 @@
   "name": "railpad",
   "version": "0.0.1",
   "description": "A Program to create a scheme of a Rail routing",
-  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "serve": "npx parcel src/index.html"
+    "serve": "npx parcel src/index.html",
+    "docs": "npx docsify serve docs"
   },
   "author": "Tobias Baumgarten",
   "license": "MIT",
   "devDependencies": {
-    "parcel": "^2.8.3"
+    "@parcel/transformer-sass": "^2.8.3",
+    "@types/react": "^18.0.28",
+    "@types/react-dom": "^18.0.11",
+    "docsify-cli": "^4.4.4",
+    "parcel": "^2.8.3",
+    "process": "^0.11.10",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   },
   "dependencies": {
-    "semantic-ui-icon": "^2.5.0"
+    "@popperjs/core": "^2.11.6",
+    "bootstrap": "^5.2.3"
   }
 }
