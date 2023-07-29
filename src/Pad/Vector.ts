@@ -1,6 +1,7 @@
-import { VectorModel } from "./models";
+import { Position } from "../Model/models";
 
-export class Vector implements VectorModel {
+
+export class Vector implements Position {
     y: number;
     x: number;
     constructor(x: number, y: number) {
@@ -8,8 +9,12 @@ export class Vector implements VectorModel {
         this.y = y;
     }
 
-    public static fromVectorModel(vec: VectorModel): Vector {
+    public static fromPosition(vec: Position): Vector {
         return new Vector(vec.x,vec.y);
+    }
+
+    public toPosition() : Position {
+        return {x: this.x, y: this.y};
     }
 
     get normal(): Vector {

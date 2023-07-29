@@ -66,8 +66,8 @@ export class NodeMapController {
             const neighbors = m.neighbors == undefined ? [] : m.neighbors;
             setMap.push(
                 new Node(
-                    Vector.fromVectorModel(m.position),
-                    neighbors.map((n) => Vector.fromVectorModel(n)),
+                    Vector.fromPosition(m.position),
+                    neighbors.map((n) => Vector.fromPosition(n)),
                     state
                 )
             );

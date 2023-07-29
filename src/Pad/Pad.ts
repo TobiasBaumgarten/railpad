@@ -8,6 +8,8 @@ import NodeWarden from "./Sprites/NodeWarden";
 import { ModeButtons, ModeButtonsState } from "./ModeButtons";
 import { Vector } from "./Vector";
 import { NodeMapController } from "./NodeMapController";
+import NodeView from "../View/NodeView";
+import NodeModel from "../Model/NodeModel";
 
 const defaultStyle: PadStyle = {
     backgroundColor: "white",
@@ -34,8 +36,10 @@ export default class Pad {
     renderer: Renderer;
     drawables: Drawable[];
     gridDots: GridDots;
-    nodeWarden: NodeWarden;
-    nodeMapController: NodeMapController;
+    nodeView: NodeView;
+    nodeModel: NodeModel;
+    // nodeWarden: NodeWarden;
+    // nodeMapController: NodeMapController;
     modeButtons: ModeButtons;
 
     public get width(): number {
@@ -76,18 +80,25 @@ export default class Pad {
             this.width = this.parent.clientWidth;
             this.height = this.parent.clientHeight;
         }).observe(this.parent);
+
+
+        this.nodeModel = new NodeModel();
+        this.nodeModel.addNodeAndNeighbors({x:0,y:0},{x:1,y:0},{x:-1,y:0})
+        this.nodeModel.addNodeAndNeighbors({x:1,y:0},{x:0,y:0},{x:2,y:0})
+
+
         this.initDrawables();
         this.inputHandlers();
-        this.nodeMapController = new NodeMapController(this.nodeWarden);
+        // this.nodeMapController = new NodeMapController(this.nodeWarden);
         this.modeButtons = new ModeButtons(this.parent);
         this.modeButtons.onChange.add((s, d) => {
             console.log("TODO:", ModeButtonsState[d]);
         });
     }
 
-    public createMap(name:string) {
-        this.nodeMapController.createNewMap(name);
-    }
+    // public createMap(name:string) {
+    //     this.nodeMapController.createNewMap(name);
+    // }
 
     private inputHandlers() {
         this.input = new Input(this.canvas, this.camera);
@@ -119,8 +130,8 @@ export default class Pad {
         if (this.input.isMouseLeftDown) {
             const selected = this.gridDots.selected();
             if (selected) {
-                this.nodeWarden.startCreate = selected;
-                this.nodeWarden.activeCreation = true;
+                // this.nodeWarden.startCreate = selected;
+                // this.nodeWarden.activeCreation = true;
             }
         }
     }
@@ -149,11 +160,11 @@ export default class Pad {
 
     private handleMouseUpEditMode() {
         const selected = this.gridDots.selected();
-        if (selected && this.nodeWarden.activeCreation) {
-            this.nodeWarden.create(selected);
-        } else if (this.nodeWarden.activeCreation) {
-            this.nodeWarden.resetCreate();
-        }
+        // if (selected && this.nodeWarden.activeCreation) {
+        //     this.nodeWarden.create(selected);
+        // } else if (this.nodeWarden.activeCreation) {
+        //     this.nodeWarden.resetCreate();
+        // }
     }
 
     private handleClick(ev: MouseEvent) {
@@ -165,7 +176,7 @@ export default class Pad {
                 const selected = this.gridDots.selected();
                 if(selected) {
                     // remove
-                    this.nodeWarden.remove(selected);
+                    // this.nodeWarden.remove(selected);
                     console.log("Deke")
                 }
                 break;
@@ -190,8 +201,8 @@ export default class Pad {
             case ModeButtonsState.edit:
                 // update the nodeWarden. He needs the information for the node creation process
                 const selected = this.gridDots.selected();
-                if (selected) this.nodeWarden.endCreate = selected;
-                else this.nodeWarden.endCreate = this.input.currentGridPos!;
+                // if (selected) this.nodeWarden.endCreate = selected;
+                // else this.nodeWarden.endCreate = this.input.currentGridPos!;
                 break;
 
             case ModeButtonsState.delete:
@@ -213,7 +224,7 @@ export default class Pad {
     private initDrawables() {
         this.drawables = [];
         this.gridDots = new GridDots();
-        this.nodeWarden = new NodeWarden();
+        this.nodeView = new NodeView(this.renderer)
     }
 
     private draw() {
@@ -222,7 +233,7 @@ export default class Pad {
             this.modeButtons.state != ModeButtonsState.view;
         // draw
         this.renderer.clear(this.style.backgroundColor);
-        this.nodeWarden.draw(this.renderer);
+        this.nodeView.draw(this.nodeModel.nodes);
         this.gridDots.draw(this.renderer);
         this.drawables.forEach((d) => d.draw(this.renderer));
     }
