@@ -1,7 +1,7 @@
 import NodeWarden from "./Sprites/NodeWarden";
 import Node from "./Sprites/Node";
-import { NodeMap, NodeState, Position, StateMapModel } from "./models";
-import { Vector } from "./Vector";
+import { NodeMap, NodeState, Position, StateMapModel } from "../Model/models";
+import { Vector } from "../Model/Vector";
 
 export class NodeMapController {
     warden: NodeWarden;

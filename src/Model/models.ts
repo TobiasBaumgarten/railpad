@@ -1,4 +1,4 @@
-import Renderer from "../Pad/Renderer";
+import Renderer from "../View/Renderer";
 
 export interface Position {
     x: number;

@@ -1,7 +1,7 @@
 import NodeModel from "../Model/NodeModel";
 import Renderer from "../Pad/Renderer";
-import { Vector } from "../Pad/Vector";
-import { Drawable, NodeState, PadStyle, Position, Node } from "../Pad/models";
+import { Vector } from "../Model/Vector";
+import { Drawable, NodeState, PadStyle, Position, Node } from "../Model/models";
 
 export default class NodeView {
     style: PadStyle;

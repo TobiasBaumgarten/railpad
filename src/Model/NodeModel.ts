@@ -1,5 +1,5 @@
-import { Vector } from "../Pad/Vector";
-import { Position, Node } from "../Pad/models";
+import { Vector } from "./Vector";
+import { Position, Node } from "./models";
 
 export default class NodeModel {
     public nodes: Node[];

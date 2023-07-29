@@ -1,10 +1,10 @@
-import Camera from "./Camera";
-import { Action, getMousePos, Signal } from "./helper";
-import { Vector } from "./Vector";
+import CameraView from "../View/Camera";
+import { Action, getMousePos, Signal } from "../Model/helper";
+import { Vector } from "../Model/Vector";
 
 export class Input {
     private canvas: HTMLCanvasElement;
-    camera: Camera;
+    camera: CameraView;
     isMouseLeftDown: boolean = false;
     isMouseRightDown: boolean = false;
     dotSelected: Vector | undefined = undefined;
@@ -25,7 +25,7 @@ export class Input {
         click: (ev) => this.handleClick(ev),
     };
 
-    constructor(canvas: HTMLCanvasElement, camera: Camera) {
+    constructor(canvas: HTMLCanvasElement, camera: CameraView) {
         this.canvas = canvas;
         this.camera = camera;
         this.registerEventListener();

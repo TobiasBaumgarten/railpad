@@ -1,7 +1,7 @@
-import { PadStyle } from "./Pad/models";
-import Pad from "./Pad/Pad";
 import { createRoot } from "react-dom/client";
 import React, { useRef } from "react";
+import { PadStyle } from "./Model/models";
+import Pad from "./Controller/Pad";
 
 
 const divpad = document.getElementById("app");

@@ -1,8 +1,8 @@
-import { Drawable } from "../models";
-import Renderer from "../Renderer";
-import { Vector } from "../Vector";
+import { Drawable } from "../Model/models";
+import Renderer from "./Renderer";
+import { Vector } from "../Model/Vector";
 
-export default class GridDots implements Drawable {
+export default class GridDotView implements Drawable {
     mouseGridPosition: Vector;
     hoverRadius = 0.1;
     dotRadius = 0.05;

@@ -1,4 +1,4 @@
-import { Signal } from "./helper";
+import { Signal } from "../Model/helper";
 const buttonClass = "btn btn-light btn-sm";
 const buttonGroupClass = "btn-group";
 const activeButton = "active";

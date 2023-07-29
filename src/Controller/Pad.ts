@@ -1,13 +1,11 @@
-import Camera from "./Camera";
-import GridDots from "./Sprites/GridDots";
-import Node from "./Sprites/Node";
-import { Input } from "./Input";
-import { Drawable, PadStyle } from "./models";
-import Renderer from "./Renderer";
-import NodeWarden from "./Sprites/NodeWarden";
-import { ModeButtons, ModeButtonsState } from "./ModeButtons";
-import { Vector } from "./Vector";
-import { NodeMapController } from "./NodeMapController";
+import CameraView from "../View/Camera";
+import GridDotView from "../View/GridDotView";
+import { Input } from "../Pad/Input";
+import { Drawable, PadStyle } from "../Model/models";
+import Renderer from "../View//Renderer";
+import { ModeButtons, ModeButtonsState } from "../Pad/ModeButtons";
+import { Vector } from "../Model/Vector";
+import { NodeMapController } from "../Pad/NodeMapController";
 import NodeView from "../View/NodeView";
 import NodeModel from "../Model/NodeModel";
 
@@ -28,14 +26,14 @@ export default class Pad {
     canvas: HTMLCanvasElement;
     ctx: CanvasRenderingContext2D;
     nodes: Node[];
-    camera: Camera;
+    camera: CameraView;
     offsetNode: number = 0.0;
     input: Input;
     // style: PadStyle;
     lineColorMap: string[];
     renderer: Renderer;
     drawables: Drawable[];
-    gridDots: GridDots;
+    gridDots: GridDotView;
     nodeView: NodeView;
     nodeModel: NodeModel;
     // nodeWarden: NodeWarden;
@@ -72,7 +70,7 @@ export default class Pad {
         this.parent.appendChild(this.canvas);
         // this.canvas.id = "pad";
         this.ctx = this.canvas.getContext("2d")!;
-        this.camera = new Camera(new Vector(0.4, 0));
+        this.camera = new CameraView(new Vector(0.4, 0));
         this.renderer = new Renderer(this.ctx, this.camera, style);
         this.width = this.parent.clientWidth;
         this.height = this.parent.clientHeight;
@@ -223,7 +221,7 @@ export default class Pad {
 
     private initDrawables() {
         this.drawables = [];
-        this.gridDots = new GridDots();
+        this.gridDots = new GridDotView();
         this.nodeView = new NodeView(this.renderer)
     }
 

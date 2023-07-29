@@ -1,13 +1,13 @@
-import Camera from "./Camera";
-import { PadStyle } from "./models";
-import { Vector } from "./Vector";
+import CameraView from "./Camera";
+import { PadStyle } from "../Model/models";
+import { Vector } from "../Model/Vector";
 
 export default class Renderer {
     ctx: CanvasRenderingContext2D;
-    camera: Camera;
+    camera: CameraView;
     padStyle: PadStyle;
 
-    constructor(ctx: CanvasRenderingContext2D, camera: Camera, padStyle: PadStyle) {
+    constructor(ctx: CanvasRenderingContext2D, camera: CameraView, padStyle: PadStyle) {
         this.ctx = ctx;
         this.camera = camera;
         this.padStyle = padStyle;
