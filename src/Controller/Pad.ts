@@ -1,11 +1,10 @@
 import CameraView from "../View/Camera";
 import GridDotView from "../View/GridDotView";
-import { Input } from "../Pad/Input";
+import { Input } from "./Input";
 import { Drawable, PadStyle } from "../Model/models";
 import Renderer from "../View//Renderer";
-import { ModeButtons, ModeButtonsState } from "../Pad/ModeButtons";
+import { ModeButtons, ModeButtonsState } from "./ModeButtons";
 import { Vector } from "../Model/Vector";
-import { NodeMapController } from "../Pad/NodeMapController";
 import NodeView from "../View/NodeView";
 import NodeModel from "../Model/NodeModel";
 
