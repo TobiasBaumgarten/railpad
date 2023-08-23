@@ -1,6 +1,6 @@
-import { Vector } from "../Model/Vector";
+import { Vector } from "./Vector";
 
-export default class CameraView {
+export default class Camera {
     center: Vector;
     width: number;
     height: number;

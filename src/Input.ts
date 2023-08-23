@@ -1,6 +1,6 @@
-import CameraView from "../View/Camera";
-import { Action, getMousePos, Signal } from "../Model/helper";
-import { Vector } from "../Model/Vector";
+import CameraView from "./Camera";
+import { Action, getMousePos, Signal } from "./helper";
+import { Vector } from "./Vector";
 
 export class Input {
     private canvas: HTMLCanvasElement;

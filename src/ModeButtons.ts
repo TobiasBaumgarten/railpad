@@ -1,13 +1,15 @@
-import { Signal } from "../Model/helper";
+import { Signal } from "./helper";
 const buttonClass = "btn btn-light btn-sm";
 const buttonGroupClass = "btn-group";
 const activeButton = "active";
+
 
 export enum ModeButtonsState {
   edit,
   delete,
   label,
   view,
+  brush
 }
 
 export class ModeButtons {
@@ -20,6 +22,7 @@ export class ModeButtons {
   private viewButton: HTMLButtonElement;
   
   private _state : ModeButtonsState;
+  brushButton: HTMLButtonElement;
   public get state() : ModeButtonsState {
     return this._state;
   }
@@ -70,6 +73,10 @@ export class ModeButtons {
     this.editButton = this.createAButton("fa-solid fa-pen", ModeButtonsState.edit);
     this.groupDiv.appendChild(this.editButton);
 
+    // brush button
+    this.brushButton = this.createAButton("fa-solid fa-brush", ModeButtonsState.brush);
+    this.groupDiv.appendChild(this.brushButton);
+    
     // delete button
     this.deleteButton = this.createAButton("fa-solid fa-trash", ModeButtonsState.delete);
     this.groupDiv.appendChild(this.deleteButton);

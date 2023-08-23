@@ -1,7 +1,4 @@
-import { Position } from "../Model/models";
-
-
-export class Vector implements Position {
+export class Vector {
     y: number;
     x: number;
     constructor(x: number, y: number) {
@@ -9,12 +6,13 @@ export class Vector implements Position {
         this.y = y;
     }
 
-    public static fromPosition(vec: Position): Vector {
-        return new Vector(vec.x,vec.y);
+    public static fromXY(vec): Vector {
+        if ("x" in vec && "y" in vec) return new Vector(vec.x, vec.y);
+        throw new Error("vector has not the property x and y");
     }
 
-    public toPosition() : Position {
-        return {x: this.x, y: this.y};
+    hash() {
+        return `${this.x};${this.y}`;
     }
 
     get normal(): Vector {

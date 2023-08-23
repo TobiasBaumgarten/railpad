@@ -1,16 +1,32 @@
-import CameraView from "./Camera";
-import { PadStyle } from "../Model/models";
-import { Vector } from "../Model/Vector";
+import Camera from "./Camera";
+import { NodeState } from "./models";
+import { PadStyle } from "./models/PadStyle";
+import { Vector } from "./Vector";
 
 export default class Renderer {
     ctx: CanvasRenderingContext2D;
-    camera: CameraView;
+    camera: Camera;
     padStyle: PadStyle;
 
-    constructor(ctx: CanvasRenderingContext2D, camera: CameraView, padStyle: PadStyle) {
+    constructor(ctx: CanvasRenderingContext2D, camera: Camera, padStyle: PadStyle) {
         this.ctx = ctx;
         this.camera = camera;
         this.padStyle = padStyle;
+    }
+
+    private getStyle(state: NodeState): string {
+        switch (state) {
+            case NodeState.build:
+                return this.padStyle.nodeLineBuild;
+            case NodeState.builded:
+                return this.padStyle.nodeLineBuilded;
+            case NodeState.deconstruct:
+                return this.padStyle.nodeLineDeconstruct;
+            case NodeState.ghost:
+                return this.padStyle.nodeLineGhost;
+            default:
+                return this.padStyle.nodeLineDefault;
+        }
     }
 
     public clear(color: string) {
@@ -31,7 +47,7 @@ export default class Renderer {
         this.drawScreenDot(radius * this.camera.scale, p, strokeStyle);
     }
 
-    public drawLine(start: Vector, end: Vector, style: string) {
+    public drawLine(start: Vector, end: Vector, style: string) {      
         const s = this.camera.getScreenPosition(start);
         const e = this.camera.getScreenPosition(end);
         this.drawScreenLine(s, e, style);
