@@ -4,13 +4,14 @@
   "description": "A Program to create a scheme of a Rail routing",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "serve": "npx parcel src/index.html",
+    "serve": "npx parcel index.html",
     "docs": "npx docsify serve docs"
   },
   "author": "Tobias Baumgarten",
   "license": "MIT",
   "devDependencies": {
     "@parcel/transformer-sass": "^2.9.3",
+    "docsify-cli": "^4.4.4",
     "parcel": "^2.9.3"
   },
   "dependencies": {
