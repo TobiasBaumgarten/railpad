@@ -11,7 +11,7 @@ export default class NodeController {
     }
 
     isIn(node: Vector) {
-        return node.hash() in this.nodes;
+        return this.nodes.has(node.hash());
     }
 
     get(node: Vector): Node | undefined {
@@ -23,11 +23,10 @@ export default class NodeController {
     add(node: Vector, ...neighbors: Vector[]) {
         let addNode = new Node(node.x, node.y);
         if (this.isIn(node)) {
-            throw new Error(
-                `Node ${addNode.hash()} is already in your collection`
-            );
+            addNode = this.get(node)!;
+        } else {
+            this.nodes.set(addNode.hash(), addNode);
         }
-        this.nodes.set(addNode.hash(), addNode);
         addNode.addNeighbors(...neighbors);
     }
 
@@ -64,31 +63,31 @@ export default class NodeController {
 
     createLine(start: Vector, end: Vector) {
         const collection = this.collectNodes(start, end);
-        const valid = this.isValidNeighbors(collection);
+        const valid = this.isValidNeighbors(start, end);
         if (!valid) return;
         for (let i = 0; i < collection!.length; i++) {
+            let newNeighbors: Vector[] = [];
             if (i > 0) {
-                this.add(collection![i], collection![i - 1]);
+                newNeighbors.push(collection![i - 1]);
             }
             if (i < collection!.length - 1) {
-                this.add(collection![i], collection![i + 1]);
+                newNeighbors.push(collection![i + 1]);
             }
+            this.add(collection![i], ...newNeighbors);
         }
     }
 
-    isValidNeighbors(newCollection: Vector[] | null): boolean {
+    isValidNeighbors(start: Vector, end: Vector): boolean {
+        const newCollection = this.collectNodes(start, end);
         if (newCollection === null) return false;
         for (let i = 0; i < newCollection.length; i++) {
-            const n = this.get(newCollection[i]);
+            const n = new Node(newCollection[i].x, newCollection[i].y);
             if (n === undefined) continue;
-            console.log(n, newCollection);
             if (i > 0) {
-                if (!n.isValidNeighbor(newCollection[i - 1]))
-                    return false;
+                if (!n.isValidNeighbor(newCollection[i - 1])) return false;
             }
             if (i < newCollection.length - 1) {
-                if (!n.isValidNeighbor(newCollection[i + 1]))
-                    return false;
+                if (!n.isValidNeighbor(newCollection[i + 1])) return false;
             }
         }
         return true;

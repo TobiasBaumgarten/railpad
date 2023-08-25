@@ -1,18 +1,21 @@
 import Renderer from "./Renderer";
 import { Vector } from "./Vector";
-import { PadStyle, NodeModel, NodeState, Drawable } from "./models";
+import {NodeModel, Drawable } from "./models";
+
+const THICKNESS = 15;
 
 export default class Node extends Vector implements Drawable {
     x: number;
     y: number;
     neighbors: Vector[];
-    state: number;
+    state: string| undefined;
+    thick: string |undefined;
     switchLength: number = 2.5;
 
     constructor(x: number, y: number) {
         super(x, y);
         this.neighbors = [];
-        this.state = 0;
+        this.state = "#000000";
     }
 
     addNeighbors(...neighbor: Vector[]) {
@@ -72,6 +75,7 @@ export default class Node extends Vector implements Drawable {
             y: this.y,
             nbors: neighborsSerialized,
             state: this.state,
+            thick: this.thick
         };
     }
 
@@ -86,23 +90,11 @@ export default class Node extends Vector implements Drawable {
         }
         const node = new Node(nodeModel.x, nodeModel.y);
         node.neighbors = deNaighbors;
-        node.state = nodeModel.state ?? 0;
+        
+        node.state = nodeModel.state;
+        node.thick = nodeModel.thick;
+        console.log(node);
         return node;
-    }
-
-    getStyle(style: PadStyle): string {
-        switch (this.state) {
-            case NodeState.build:
-                return style.nodeLineBuild;
-            case NodeState.builded:
-                return style.nodeLineBuilded;
-            case NodeState.deconstruct:
-                return style.nodeLineDeconstruct;
-            case NodeState.ghost:
-                return style.nodeLineGhost;
-            default:
-                return style.nodeLineDefault;
-        }
     }
 
     private calcHalfPosition(node: Vector) {
@@ -110,12 +102,22 @@ export default class Node extends Vector implements Drawable {
     }
 
     draw(renderer: Renderer): void {
-        
+        if(this.thick) {
+            this.neighbors.forEach((node) => {
+                renderer.drawLine(
+                    this,
+                    this.calcHalfPosition(node),
+                    this.thick,
+                    THICKNESS
+                );
+            });
+        }
+
         this.neighbors.forEach((node) => {
             renderer.drawLine(
                 this,
                 this.calcHalfPosition(node),
-                this.getStyle(renderer.padStyle)
+                this.state
             );
         });
 
@@ -126,7 +128,7 @@ export default class Node extends Vector implements Drawable {
                     this,
                     this.add(s.a.multiply(d)),
                     this.add(s.b.multiply(d)),
-                    this.getStyle(renderer.padStyle)
+                    this.state
                 );
             });
         }

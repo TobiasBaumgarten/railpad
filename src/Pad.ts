@@ -1,3 +1,5 @@
+import "./styles/styles.scss";
+
 import Camera from "./Camera";
 import NodeController from "./NodeController";
 import Renderer from "./Renderer";
@@ -6,8 +8,8 @@ import { PadStyle } from "./models/PadStyle";
 import mock from "./mock.json";
 import { GridDotView } from "./GridDotView";
 import { Input } from "./Input";
-import { ModeButtons, ModeButtonsState } from "./ModeButtons";
-import "./styles/styles.scss";
+import { PaintModeButton, ModeButton, EditModeButton, ViewModeButton } from "./modeButtons";
+import { Drawable } from "./models";
 
 export default class {
     parent: HTMLElement;
@@ -18,9 +20,9 @@ export default class {
     nodeController: NodeController;
     gridDotView: GridDotView;
     input: Input;
-    modeButtons: ModeButtons;
-    aktiveCreation: any;
-    startCreation: Vector | null;
+    buttons: ModeButton[];
+    drawables: Drawable[] = [];
+    buttonGroupDiv: HTMLDivElement;
 
     constructor(id: string, style: PadStyle = defaultStyle) {
         const parent = document.getElementById(id);
@@ -31,7 +33,6 @@ export default class {
         this.parent = parent!;
         this.canvas = document.createElement("canvas");
         this.parent.appendChild(this.canvas);
-        // this.canvas.id = "pad";
         this.ctx = this.canvas.getContext("2d")!;
         this.camera = new Camera(new Vector(0.4, 0));
         this.renderer = new Renderer(this.ctx, this.camera, style);
@@ -39,16 +40,42 @@ export default class {
         this.height = 600;
 
         this.gridDotView = new GridDotView();
+        this.input = new Input(this.canvas, this.camera);
 
         this.nodeController = new NodeController();
         this.nodeController.deserialize(mock);
+        this.createModeButtonDiv();
+         this.inputHandlers();
+    }
 
-        this.modeButtons = new ModeButtons(this.parent);
-        this.modeButtons.onChange.add((s, d) => {
-            console.log("TODO:", ModeButtonsState[d]);
+    private createModeButtonDiv() {
+        this.buttons = [];
+        this.buttonGroupDiv = document.createElement("div");
+        this.buttonGroupDiv.classList.add("overlay");
+        this.parent.appendChild(this.buttonGroupDiv);
+        this.setUpModeButtons();
+        this.buttons.forEach((b) => {
+            b.button.addEventListener("click", (e) => {
+                this.setActiveModeButton(b);
+                if('draw' in b) {
+                    this.drawables.push(b as Drawable)
+                }
+            });
+            this.buttonGroupDiv.appendChild(b.button!);
         });
+    }
 
-        this.inputHandlers();
+    private setActiveModeButton(button: ModeButton) {
+        this.buttons.forEach((b) => {
+            b.isActive = false;
+        });
+        button.isActive = true;
+    }
+
+    private setUpModeButtons() {
+        this.buttons.push(new EditModeButton(this));
+        this.buttons.push(new PaintModeButton(this));
+        this.buttons.push(new ViewModeButton(this,true));
     }
 
     public get width(): number {
@@ -76,137 +103,28 @@ export default class {
         this.renderer.clear(this.renderer.padStyle.backgroundColor);
         this.gridDotView.draw(this.renderer);
         this.nodeController.draw(this.renderer);
-
-        // this.gridDots.draw(this.renderer);
-        // this.drawables.forEach((d) => d.draw(this.renderer));
+        this.drawables.forEach(d => d.draw(this.renderer))
     }
 
     private inputHandlers() {
-        this.input = new Input(this.canvas, this.camera);
         this.input.onMove.add((gp) => this.handleMove(gp));
         this.input.onWheel.add((_, ev) => this.handleWheel(ev));
-        this.input.onClick.add((ev) => this.handleClick(ev));
-        this.input.onMouseDown.add((ev) => this.handleMouseDown(ev));
-        this.input.onMouseUp.add((ev) => this.handleMouseUp(ev));
     }
 
-    private handleMouseDown(ev: MouseEvent): void {
-        switch (this.modeButtons.state) {
-            case ModeButtonsState.edit:
-                this.handleMouseDownEditMode();
-                break;
-            case ModeButtonsState.delete:
-                break;
-            case ModeButtonsState.label:
-                break;
-
-            default: //view
-                break;
-        }
-    }
-
-    private handleMouseUp(ev: MouseEvent): void {
-        switch (this.modeButtons.state) {
-            case ModeButtonsState.edit:
-                this.handleMouseUpEditMode();
-                break;
-            case ModeButtonsState.delete:
-                break;
-            case ModeButtonsState.label:
-                break;
-
-            default: //view
-                break;
-        }
-        if (ev.button == 0) {
-            // right Mouse button
-        }
-    }
-
-    private handleMouseUpEditMode() {
-        const selected = this.gridDotView.selected();
-        // if (selected && this.nodeWarden.activeCreation) {
-        //     this.nodeWarden.create(selected);
-        // } else if (this.nodeWarden.activeCreation) {
-        //     this.nodeWarden.resetCreate();
-        // }
-    }
-
-    private handleClick(ev: MouseEvent) {
-        switch (this.modeButtons.state) {
-            case ModeButtonsState.edit:
-                // Nothing
-                break;
-            case ModeButtonsState.delete:
-                const selected = this.gridDotView.selected();
-                if (selected) {
-                    // remove
-                    // this.nodeWarden.remove(selected);
-                    console.log("Deke");
-                }
-                break;
-            case ModeButtonsState.label:
-                break;
-
-            default: //view
-                break;
-        }
-    }
 
     private handleMove(ev: MouseEvent) {
         // The camera movement
         if (this.input.isMouseRightDown) {
             this.camera.move(ev.movementX, ev.movementY);
         }
-
-        // update the mouse position in GridDots
         this.gridDotView.mouseGridPosition = this.input.currentGridPos!;
-
-        switch (this.modeButtons.state) {
-            case ModeButtonsState.edit:
-                // update the nodeWarden. He needs the information for the node creation process
-                const selected = this.gridDotView.selected();
-                // if (selected) this.nodeWarden.endCreate = selected;
-                // else this.nodeWarden.endCreate = this.input.currentGridPos!;
-                break;
-
-            case ModeButtonsState.delete:
-                break;
-            case ModeButtonsState.label:
-                break;
-
-            default: //view
-                break;
-        }
     }
 
     private handleWheel(ev: WheelEvent) {
+        // camera
         ev.preventDefault();
         const value = ev.deltaY > 1 ? 1 : -1;
         this.camera.zoom(value);
-    }
-
-    private handleMouseDownEditMode() {
-        if (this.input.isMouseLeftDown) {
-            const selected = this.gridDotView.selected();
-
-            if (selected) {
-                if (!this.aktiveCreation) {
-                    console.log(selected);
-                    this.aktiveCreation = true;
-                    this.startCreation = selected;
-                } else {
-                    this.aktiveCreation = false;
-                    this.nodeController.createLine(
-                        this.startCreation!,
-                        selected
-                    );
-                    this.startCreation = null;
-                }
-                // this.nodeWarden.startCreate = selected;
-                // this.nodeWarden.activeCreation = true;
-            }
-        }
     }
 }
 

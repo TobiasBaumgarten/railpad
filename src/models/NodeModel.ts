@@ -2,5 +2,6 @@ export interface NodeModel {
     x: number
     y: number
     nbors: number[]
-    state?: number
+    state?: string
+    thick?: string
 }

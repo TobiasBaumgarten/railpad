@@ -28,3 +28,14 @@
     left: 0;
     z-index: 10;
 }
+
+button.active {
+    background-color: gray;
+}
+
+.picker {
+    position: absolute;
+    flex: auto;
+    top: 30px;
+    left: 0;
+}
