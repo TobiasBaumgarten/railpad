@@ -22,6 +22,30 @@
     left: 0;
 }
 
+.btn {
+    background-color: #019606; /* Green */
+    border: none;
+    color: white;
+    padding: 5px 8px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+}
+
+.btn:hover {
+    background-color: #4f6b02;
+}
+
+input.btn {
+    padding: 0px 0px;
+    margin: 0;
+}
+
+.btn.active {
+    background-color: #015a04;
+    border: none;
+}
 .overlay {
     position: absolute;
     top: 0;
@@ -29,13 +53,21 @@
     z-index: 10;
 }
 
-button.active {
-    background-color: gray;
-}
-
-.picker {
+.controlDiv {
+    width: 80px;
+    margin: auto;
     position: absolute;
-    flex: auto;
     top: 30px;
     left: 0;
 }
+
+.controlDiv.hidden {
+    display: none;
+}
+
+.controlDiv>.btn {
+    width: 100px;
+    margin-top: 2;
+}
+
+

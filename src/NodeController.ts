@@ -31,6 +31,17 @@ export default class NodeController {
     }
 
     remove(node: Node | Vector): boolean {
+        // TODO: Da ist irgendwo noch ein bug den ich fixen muss
+        // Manchaml werden die nachbarn nicht richtig gelöscht
+        const n = this.nodes.get(node.hash());
+        let removales: Node[] = [];
+        n?.neighbors.forEach((neigVec) => {
+            const neig = this.nodes.get(neigVec.hash());
+            neig?.removeNeighbor(n);
+            if (neig != undefined && neig.neighbors.length == 0)
+                removales.push(neig);
+        });
+        removales.forEach((r) => this.remove(r));
         return this.nodes.delete(node.hash());
     }
 
@@ -40,6 +51,14 @@ export default class NodeController {
             let node = Node.deserialize(m);
             this.nodes.set(node.hash(), node);
         });
+    }
+
+    serialize(): NodeModel[] {
+        let result: NodeModel[] = []
+        this.nodes.forEach(n => {
+            result.push(n.serialize())
+        })
+        return result;
     }
 
     private collectNodes(start: Vector, end: Vector): Vector[] | null {

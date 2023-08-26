@@ -10,8 +10,8 @@ export class ViewModeButton extends ModeButton {
         super(pad, "eye", active);
     }
 
-    public set isActive(v: boolean) {
-        this.setIsActive(v);
+
+    setIsActive(v: boolean) {
         this.pad.gridDotView.viewDots = !v;
         this.pad.gridDotView.viewHover = !v;
     }

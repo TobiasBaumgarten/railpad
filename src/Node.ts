@@ -1,6 +1,6 @@
 import Renderer from "./Renderer";
 import { Vector } from "./Vector";
-import {NodeModel, Drawable } from "./models";
+import { NodeModel, Drawable } from "./models";
 
 const THICKNESS = 15;
 
@@ -8,14 +8,15 @@ export default class Node extends Vector implements Drawable {
     x: number;
     y: number;
     neighbors: Vector[];
-    state: string| undefined;
-    thick: string |undefined;
+    lineColor?: string;
+    backColor?: string;
+    description?: number;
     switchLength: number = 2.5;
 
     constructor(x: number, y: number) {
         super(x, y);
         this.neighbors = [];
-        this.state = "#000000";
+        this.lineColor = "#000000";
     }
 
     addNeighbors(...neighbor: Vector[]) {
@@ -28,6 +29,11 @@ export default class Node extends Vector implements Drawable {
 
             this.neighbors.push(n);
         });
+    }
+
+    removeNeighbor(neighbor: Vector) {
+        const index = this.neighbors.indexOf(neighbor);
+        this.neighbors.splice(index - 1, 1);
     }
 
     isValidNeighbor(neighbor: Vector) {
@@ -71,29 +77,24 @@ export default class Node extends Vector implements Drawable {
         let neighborsSerialized: number[] = [];
         this.neighbors.forEach((n) => neighborsSerialized.push(n.x, n.y));
         return {
-            x: this.x,
-            y: this.y,
-            nbors: neighborsSerialized,
-            state: this.state,
-            thick: this.thick
+            p: [this.x, this.y],
+            n: neighborsSerialized,
+            l: this.lineColor,
+            b: this.backColor,
         };
     }
 
     static deserialize(nodeModel: NodeModel): Node {
         let deNaighbors: Vector[] = [];
-        for (let i = 0; i < nodeModel.nbors.length; i+=2) {
-            let v = new Vector(
-                nodeModel.nbors[i],
-                nodeModel.nbors[i + 1]
-            );
+        for (let i = 0; i < nodeModel.n.length; i += 2) {
+            let v = new Vector(nodeModel.n[i], nodeModel.n[i + 1]);
             deNaighbors.push(v);
         }
-        const node = new Node(nodeModel.x, nodeModel.y);
+        const node = new Node(nodeModel.p[0], nodeModel.p[1]);
         node.neighbors = deNaighbors;
-        
-        node.state = nodeModel.state;
-        node.thick = nodeModel.thick;
-        console.log(node);
+
+        node.lineColor = nodeModel.l;
+        node.backColor = nodeModel.b;
         return node;
     }
 
@@ -102,12 +103,12 @@ export default class Node extends Vector implements Drawable {
     }
 
     draw(renderer: Renderer): void {
-        if(this.thick) {
+        if (this.backColor) {
             this.neighbors.forEach((node) => {
                 renderer.drawLine(
                     this,
                     this.calcHalfPosition(node),
-                    this.thick,
+                    this.backColor,
                     THICKNESS
                 );
             });
@@ -117,7 +118,7 @@ export default class Node extends Vector implements Drawable {
             renderer.drawLine(
                 this,
                 this.calcHalfPosition(node),
-                this.state
+                this.lineColor
             );
         });
 
@@ -128,7 +129,7 @@ export default class Node extends Vector implements Drawable {
                     this,
                     this.add(s.a.multiply(d)),
                     this.add(s.b.multiply(d)),
-                    this.state
+                    this.lineColor
                 );
             });
         }

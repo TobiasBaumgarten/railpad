@@ -8,6 +8,7 @@ export abstract class ModeButton {
     iconName: string;
     protected _isActive: boolean;
     pad: Pad;
+    controlDiv: HTMLDivElement;
 
     constructor(pad: Pad, iconName: string, isActive = false) {
         this.pad = pad;
@@ -15,14 +16,30 @@ export abstract class ModeButton {
         this.createAButton();
         this.isActive = isActive;
         this.wireHandlers();
+
+        this.controlDiv = Object.assign(document.createElement("div"), {
+            classList: ["controlDiv hidden"],
+        });
+        this.pad.parent.appendChild(this.controlDiv)
+        this.resetVisibility();
     }
     public set isActive(v: boolean) {
+        this._isActive = v;
+        this.setClassName();
+        this.resetVisibility();
         this.setIsActive(v);
     }
 
-    protected setIsActive(v: boolean) {
-        this._isActive = v;
-        this.setClassName();
+    abstract setIsActive(v: boolean);
+
+    protected resetVisibility() {
+        if (this.controlDiv == undefined) return;
+        if(this._isActive) {
+            this.controlDiv.classList.remove("hidden");
+        }
+        else{
+            this.controlDiv.classList.add("hidden");
+        }
     }
 
     public get isActive(): boolean {
@@ -30,11 +47,11 @@ export abstract class ModeButton {
     }
 
     public setClassName() {
-       
         if (!this.button) return;
         const cNs: string[] = [];
         cNs.push(`fa-solid fa-${this.iconName}`);
         cNs.push(this._isActive ? "active" : "");
+        cNs.push("btn");
         this.button.className = cNs.join(" ");
     }
 
@@ -52,7 +69,7 @@ export abstract class ModeButton {
     }
 
     private wireHandlers() {
-        this.pad.input.onMove.add((gp) => 
+        this.pad.input.onMove.add((gp) =>
             this.callWhenActive(() => this.handleMove(gp))
         );
         this.pad.input.onWheel.add((_, ev) =>

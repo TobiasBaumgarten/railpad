@@ -8,8 +8,14 @@ import { PadStyle } from "./models/PadStyle";
 import mock from "./mock.json";
 import { GridDotView } from "./GridDotView";
 import { Input } from "./Input";
-import { PaintModeButton, ModeButton, EditModeButton, ViewModeButton } from "./modeButtons";
-import { Drawable } from "./models";
+import {
+    PaintModeButton,
+    ModeButton,
+    EditModeButton,
+    ViewModeButton,
+} from "./modeButtons";
+import { Drawable, NodeModel } from "./models";
+import { SaveModeButton } from "./modeButtons/SaveModeButton";
 
 export default class {
     parent: HTMLElement;
@@ -26,7 +32,6 @@ export default class {
 
     constructor(id: string, style: PadStyle = defaultStyle) {
         const parent = document.getElementById(id);
-        console.log(parent);
 
         if (this.parent === null)
             throw new Error("There is no element with the id: " + id);
@@ -42,10 +47,14 @@ export default class {
         this.gridDotView = new GridDotView();
         this.input = new Input(this.canvas, this.camera);
 
+        this.dropJSON((data) => {
+            this.nodeController.deserialize(data);
+        });
+
         this.nodeController = new NodeController();
         this.nodeController.deserialize(mock);
         this.createModeButtonDiv();
-         this.inputHandlers();
+        this.inputHandlers();
     }
 
     private createModeButtonDiv() {
@@ -57,8 +66,8 @@ export default class {
         this.buttons.forEach((b) => {
             b.button.addEventListener("click", (e) => {
                 this.setActiveModeButton(b);
-                if('draw' in b) {
-                    this.drawables.push(b as Drawable)
+                if ("draw" in b) {
+                    this.drawables.push(b as Drawable);
                 }
             });
             this.buttonGroupDiv.appendChild(b.button!);
@@ -75,7 +84,8 @@ export default class {
     private setUpModeButtons() {
         this.buttons.push(new EditModeButton(this));
         this.buttons.push(new PaintModeButton(this));
-        this.buttons.push(new ViewModeButton(this,true));
+        this.buttons.push(new ViewModeButton(this, true));
+        this.buttons.push(new SaveModeButton(this));
     }
 
     public get width(): number {
@@ -101,16 +111,15 @@ export default class {
 
     update() {
         this.renderer.clear(this.renderer.padStyle.backgroundColor);
-        this.gridDotView.draw(this.renderer);
         this.nodeController.draw(this.renderer);
-        this.drawables.forEach(d => d.draw(this.renderer))
+        this.drawables.forEach((d) => d.draw(this.renderer));
+        this.gridDotView.draw(this.renderer);
     }
 
     private inputHandlers() {
         this.input.onMove.add((gp) => this.handleMove(gp));
         this.input.onWheel.add((_, ev) => this.handleWheel(ev));
     }
-
 
     private handleMove(ev: MouseEvent) {
         // The camera movement
@@ -125,6 +134,27 @@ export default class {
         ev.preventDefault();
         const value = ev.deltaY > 1 ? 1 : -1;
         this.camera.zoom(value);
+    }
+
+    private dropJSON(callback: (data: NodeModel[]) => void) {
+        // disable default drag & drop functionality
+        this.canvas.addEventListener("dragenter", function (e) {
+            e.preventDefault();
+        });
+        this.canvas.addEventListener("dragover", function (e) {
+            e.preventDefault();
+        });
+
+        this.canvas.addEventListener("drop", function (event) {
+            var reader = new FileReader();
+            reader.onloadend = function () {
+                var data = JSON.parse(this.result as string);
+                callback(data);
+            };
+
+            reader.readAsText(event.dataTransfer!.files[0]);
+            event.preventDefault();
+        });
     }
 }
 
