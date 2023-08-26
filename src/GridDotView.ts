@@ -1,26 +1,27 @@
-import { Drawable } from "../models";
-import Renderer from "../Renderer";
-import { Vector } from "../Vector";
+import { Drawable } from "./models";
+import Renderer from "./Renderer";
+import { Vector } from "./Vector";
 
-export default class GridDots implements Drawable {
+export class GridDotView implements Drawable {
     mouseGridPosition: Vector;
     hoverRadius = 0.1;
+    intersectRadius = 0.4;
     dotRadius = 0.05;
     viewDots = true;
     viewHover = true;
     constructor() {}
 
     public get isMouseOverDot(): boolean {
-        return this.getHover(this.hoverRadius * 2) !== null;
+        return this.getHover() !== null;
     }
 
-    private getHover(intersectRadius): Vector | null {
+    private getHover(): Vector | null {
         if (this.mouseGridPosition === undefined) return null;
         const xAbs = Math.abs(this.mouseGridPosition.x % 1);
         const yAbs = Math.abs(this.mouseGridPosition.y % 1);
         if (
-            (xAbs < intersectRadius || xAbs > 1 - intersectRadius) &&
-            (yAbs < intersectRadius || yAbs > 1 - intersectRadius)
+            (xAbs < this.intersectRadius || xAbs > 1 - this.intersectRadius) &&
+            (yAbs < this.intersectRadius || yAbs > 1 - this.intersectRadius)
         ) {
             return this.mouseGridPosition.round();
         }
@@ -29,7 +30,7 @@ export default class GridDots implements Drawable {
 
     /** Returns a grid dot if the mouse is hovers over a dot, else it returns null */
     public selected(): Vector | null {
-        return this.getHover(this.hoverRadius * 2);
+        return this.getHover();
     }
 
     draw(renderer: Renderer): void {
@@ -39,7 +40,7 @@ export default class GridDots implements Drawable {
         const end = cam.getScreenPosition(corners[1]);
         const radius = cam.scale * this.dotRadius;
 
-        const hover = this.getHover(this.hoverRadius * 2);
+        const hover = this.getHover();
         if (hover != null && this.viewHover) {
             renderer.drawDot(
                 this.hoverRadius,

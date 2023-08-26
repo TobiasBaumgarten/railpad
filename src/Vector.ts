@@ -1,6 +1,4 @@
-import { VectorModel } from "./models";
-
-export class Vector implements VectorModel {
+export class Vector {
     y: number;
     x: number;
     constructor(x: number, y: number) {
@@ -8,8 +6,13 @@ export class Vector implements VectorModel {
         this.y = y;
     }
 
-    public static fromVectorModel(vec: VectorModel): Vector {
-        return new Vector(vec.x,vec.y);
+    public static fromXY(vec): Vector {
+        if ("x" in vec && "y" in vec) return new Vector(vec.x, vec.y);
+        throw new Error("vector has not the property x and y");
+    }
+
+    hash() {
+        return `${this.x};${this.y}`;
     }
 
     get normal(): Vector {
