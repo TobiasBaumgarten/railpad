@@ -49,6 +49,22 @@ export default class Renderer {
         this.drawScreenLine(s, e, style, lineWidth);
     }
 
+    public drawRect(
+        pos: Vector,
+        width: number,
+        height: number,
+        fillStyle: string
+    ) {
+        const sp = this.camera.getScreenPosition(pos);
+        this.drawScreenRect(
+            sp.x,
+            sp.y,
+            width * this.camera.scale,
+            height * this.camera.scale,
+            fillStyle
+        );
+    }
+
     public drawTriangle(
         start: Vector,
         mid: Vector,
@@ -62,6 +78,7 @@ export default class Renderer {
         ];
         const everyNotOnScreen = points.every((p) => !this.isVectorOnScreen(p));
         if (everyNotOnScreen) return;
+        this.ctx.save();
         this.ctx.beginPath();
         this.ctx.moveTo(points[0].x, points[0].y);
         this.ctx.lineTo(points[1].x, points[1].y);
@@ -69,6 +86,28 @@ export default class Renderer {
         this.ctx.closePath();
         this.ctx.fillStyle = style;
         this.ctx.fill();
+        this.ctx.restore();
+    }
+
+    public drawText(
+        text: string,
+        pos: Vector,
+        rotation: number = 0,
+        size: number = 11,
+        font: string = "serif",
+        backgroundColor?: boolean
+    ) {
+        let gridV = this.camera.getScreenPosition(pos);
+
+        this.drawScreenText(
+            text,
+            gridV.x,
+            gridV.y,
+            rotation,
+            size,
+            font,
+            backgroundColor
+        );
     }
 
     public drawScreenLine(
@@ -79,6 +118,7 @@ export default class Renderer {
     ) {
         if (!this.isVectorOnScreen(start) && !this.isVectorOnScreen(end))
             return;
+        this.ctx.save();
         this.ctx.beginPath();
         this.ctx.lineWidth = lineWitdth;
         this.ctx.moveTo(start.x, start.y);
@@ -86,23 +126,61 @@ export default class Renderer {
         this.ctx.closePath();
         this.ctx.strokeStyle = strokeStyle;
         this.ctx.stroke();
+        this.ctx.restore();
     }
 
-    public drawScreenDot(
-        radius: number,
-        position: Vector,
-        strokeStyle: string
-    ) {
+    public drawScreenDot(radius: number, position: Vector, fillStyle: string) {
         if (!this.isVectorOnScreen(position)) return;
         const endAngle = Math.PI * 2;
         this.ctx.beginPath();
         this.ctx.arc(position.x, position.y, radius, 0, endAngle);
         this.ctx.closePath();
-        this.ctx.fillStyle = strokeStyle;
+        this.ctx.fillStyle = fillStyle;
         this.ctx.fill();
     }
 
     public drawScreenImage(image, dx, dy, dWidth, dHeight) {
-        this.ctx.drawImage(image, dx, dy,dWidth, dHeight);
+        this.ctx.drawImage(image, dx, dy, dWidth, dHeight);
+    }
+
+    public drawScreenText(
+        text: string,
+        x: number,
+        y: number,
+        rotation: number = 0,
+        size: number,
+        font: string,
+        backgroundColor?: boolean
+    ) {
+        this.ctx.save();
+        this.ctx.translate(x, y);
+        this.ctx.textAlign = "center";
+        this.ctx.font = `${size}px ${font}`;
+        this.ctx.rotate(rotation);
+        if (backgroundColor) {
+            const dim = this.ctx.measureText(text);
+            this.ctx.fillStyle = "white";
+            this.ctx.fillRect(0, 0, dim.width, size);
+            this.ctx.stroke();
+        }
+        this.ctx.fillStyle = this.padStyle.nodeLineDefault;
+        this.ctx.fillText(text, 0, 0);
+        this.ctx.restore();
+    }
+
+    public drawScreenRect(
+        x: number,
+        y: number,
+        width: number,
+        height: number,
+        fillstyle: string
+    ) {      
+        this.ctx.save();
+        this.ctx.beginPath();
+        this.ctx.fillStyle = fillstyle;
+        this.ctx.rect(x, y, width, height);
+        this.ctx.fill();
+        this.ctx.closePath();
+        this.ctx.restore();
     }
 }

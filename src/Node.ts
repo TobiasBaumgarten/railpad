@@ -42,11 +42,11 @@ export default class Node extends Vector implements Drawable {
         });
     }
 
-    removeNeighbor(neighbor: Vector, norm = false) {       
+    removeNeighbor(neighbor: Vector, norm = false) {
         const neig = norm ? neighbor : neighbor.sub(this);
-        let index = -1
-        for (let i = 0; i <  this.neighbors.length; i++) {
-            if(this.neighbors[i].eq(neig)) {
+        let index = -1;
+        for (let i = 0; i < this.neighbors.length; i++) {
+            if (this.neighbors[i].eq(neig)) {
                 index = i;
                 break;
             }
@@ -104,6 +104,7 @@ export default class Node extends Vector implements Drawable {
             n: neighborsSerialized,
             lc: this.lineColor,
             bc: this.backColor,
+            d: this.description,
         };
     }
 
@@ -118,7 +119,22 @@ export default class Node extends Vector implements Drawable {
 
         node.lineColor = nodeModel.lc;
         node.backColor = nodeModel.bc;
+        node.description = nodeModel.d;
         return node;
+    }
+
+    private findFreeSpace4Text(): [Vector, number] {
+        let position = new Vector(0, -1);
+        const rotation = Math.PI / 4;
+        for (let i = 0; i < 8; i++) {
+            const a = position.rotate(-rotation).round();
+            const b = position.rotate(rotation).round();
+            if (this.neighbors.some((n) => n.eq(a) || n.eq(b))) {
+                position = position.rotate(rotation).round();
+                continue;
+            } else return [position, rotation * i];
+        }
+        return [position, rotation];
     }
 
     draw(renderer: Renderer): void {
@@ -139,7 +155,7 @@ export default class Node extends Vector implements Drawable {
 
         if (this.isSwitch()) {
             this.getSwitchNeighbors().forEach((swNeig) => {
-                const d = -1 / this.switchLength;
+                const d = 1 / this.switchLength;
                 renderer.drawTriangle(
                     this,
                     this.add(swNeig.a.multiply(d)),
@@ -147,6 +163,39 @@ export default class Node extends Vector implements Drawable {
                     this.lineColor
                 );
             });
+        }
+
+        if (this.description) {
+            let text = "";
+            let [pos, rot] = this.findFreeSpace4Text();
+            let textRot = 0;
+            // let backcolor: boolean = false
+            if (this.isSwitch()) {
+                text += "W";
+                textRot = rot;
+
+                // pos.y = pos.y > 0 ? 4 : pos.y;
+                if (rot >= Math.PI) {
+                    textRot = rot - Math.PI;
+                    pos = pos.multiply(new Vector(1, 1.7));
+                }
+            } else {
+                renderer.drawRect(
+                    this.add(new Vector(-0.25, -0.25)),
+                    0.5,
+                    0.4,
+                    "rgba(255,255,255,.9)"
+                    //TODO: DO NOT HARDCODED!
+                );
+                pos = new Vector(0, 0.5);
+            }
+
+            text += this.description.toString();
+            renderer.drawText(
+                text,
+                this.add(pos.multiply(0.2)),
+                textRot
+            );
         }
     }
 }

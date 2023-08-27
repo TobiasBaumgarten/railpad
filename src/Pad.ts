@@ -13,9 +13,10 @@ import {
     ModeButton,
     EditModeButton,
     ViewModeButton,
+    SaveModeButton,
+    LabelModeButton
 } from "./modeButtons";
 import { Drawable, NodeModel } from "./models";
-import { SaveModeButton } from "./modeButtons/SaveModeButton";
 
 export default class {
     parent: HTMLElement;
@@ -52,7 +53,7 @@ export default class {
         });
 
         this.nodeController = new NodeController();
-        // this.nodeController.deserialize(mock);
+        this.nodeController.deserialize(mock);
         this.createModeButtonDiv();
         this.inputHandlers();
     }
@@ -84,6 +85,7 @@ export default class {
     private setUpModeButtons() {
         this.buttons.push(new EditModeButton(this));
         this.buttons.push(new PaintModeButton(this));
+        this.buttons.push(new LabelModeButton(this));
         this.buttons.push(new ViewModeButton(this, true));
         this.buttons.push(new SaveModeButton(this));
     }
@@ -111,8 +113,8 @@ export default class {
 
     update() {
         this.renderer.clear(this.renderer.padStyle.backgroundColor);
-        this.nodeController.draw(this.renderer);
         this.drawables.forEach((d) => d.draw(this.renderer));
+        this.nodeController.draw(this.renderer);
         this.gridDotView.draw(this.renderer);
     }
 

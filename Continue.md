@@ -13,11 +13,11 @@ Jetzt wäre es mal an der Zeit sich diesen nochmal anzuschauen. Also was wie wo.
 
 
 ## Beschreibung
-- [ ] Jetzt ist es an der Zeit die Beschreibung einzufügen.
+- [x] Jetzt ist es an der Zeit die Beschreibung einzufügen.
   - [x] Hierfür müsste ich erstmal überlegen, wie ich das umsetzen will. 
   - reicht es mir, dass ich eine Note anklicke und diese nur die Beschreibung hält und auch anzeigt? (✔)
   - oder will ich, dass alle anliegenden die Beschreibung bekommen und ich das Mittelstück rausrechne und hier das Label anzeige.
-- [ ] Beschreibe erstmal die weichen und dann die Gleise
+- [x] Beschreibe erstmal die weichen und dann die Gleise 
 - [ ] Es wäre schön, wenn man die Beschreibung aus und einblenden kann
 
 ## Objekte wie Signale und Bahnsteige

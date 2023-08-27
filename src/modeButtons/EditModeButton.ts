@@ -121,9 +121,7 @@ export class EditModeButton extends ModeButton implements Drawable {
     }
 
     private drawEraser(renderer: Renderer) {
-        console.log(this.pad.input.mousePosition);
-        
-        if (this.deleteMode && this.pad.input.mousePosition) {
+        if (this.deleteMode) {
             const pos = this.pad.input.mousePosition;
             renderer.drawScreenImage(
                 this.eraserImage,
