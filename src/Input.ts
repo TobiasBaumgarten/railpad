@@ -14,6 +14,7 @@ export class Input {
     onMouseDown = new Action<MouseEvent>();
     onMouseUp = new Action<MouseEvent>();
     onClick = new Action<MouseEvent>();
+    mousePosition: Vector;
     // onZoom?: (ev: number) => void;
 
     private eventListenerMap = {
@@ -46,9 +47,8 @@ export class Input {
     }
 
     private handleMouseMove(ev: MouseEvent) {
-        this.currentGridPos = this.camera.getGridPosition(
-            getMousePos(this.canvas, ev)
-        );
+        this.mousePosition = getMousePos(this.canvas, ev);
+        this.currentGridPos = this.camera.getGridPosition(this.mousePosition);
         this.onMove.trigger(ev);
         // if (this.isMouseLeftDown) {
         //     if (this.onMoveRight)

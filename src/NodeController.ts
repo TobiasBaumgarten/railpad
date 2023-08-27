@@ -62,13 +62,11 @@ export default class NodeController {
     }
 
     private collectNodes(start: Vector, end: Vector): Vector[] | null {
-        // const Vstart = Vector.fromPosition(start);
-        // const Vend = Vector.fromPosition(end);
         const base = start.sub(end);
         // There have to be a check if the base is diagonal or horizontal!!!!
         if (!(base.isHorizontal || base.isDiagonal)) return null;
         if (!base.isInteger) return null;
-
+        
         const normal = base.normal.round();
         let result: Vector[] = [];
 
@@ -114,10 +112,5 @@ export default class NodeController {
 
     draw(renderer: Renderer): void {
         this.nodes.forEach((n) => n.draw(renderer));
-
-        // if (!this.activeCreation) return;
-
-        // debounce(this.setValidColor(), 500);
-        // renderer.drawLine(this.startCreate, this.endCreate, this.validColor);
     }
 }

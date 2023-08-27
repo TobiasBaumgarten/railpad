@@ -101,4 +101,8 @@ export default class Renderer {
         this.ctx.fillStyle = strokeStyle;
         this.ctx.fill();
     }
+
+    public drawScreenImage(image, dx, dy, dWidth, dHeight) {
+        this.ctx.drawImage(image, dx, dy,dWidth, dHeight);
+    }
 }
