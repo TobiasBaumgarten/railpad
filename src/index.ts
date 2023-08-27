@@ -1,4 +1,4 @@
 import Pad from "./Pad";
 
 const pad = new Pad("app");
-pad.run(30);
+pad.run(60);
