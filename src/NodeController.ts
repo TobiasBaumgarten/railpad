@@ -36,8 +36,11 @@ export default class NodeController {
         const n = this.nodes.get(node.hash());
         let removales: Node[] = [];
         n?.neighbors.forEach((neigVec) => {
-            const neig = this.nodes.get(neigVec.hash());
+            const pos = n.add(neigVec)
+            const neig = this.nodes.get(pos.hash());
+            
             neig?.removeNeighbor(n);
+            
             if (neig != undefined && neig.neighbors.length == 0)
                 removales.push(neig);
         });

@@ -6,7 +6,7 @@ export interface NodeModel {
     /** description number */
     d?: number;
     /** line color */
-    l?: string;
+    lc?: string;
     /** background color */
-    b?: string;
+    bc?: string;
 }

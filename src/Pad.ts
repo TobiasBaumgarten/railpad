@@ -52,7 +52,7 @@ export default class {
         });
 
         this.nodeController = new NodeController();
-        this.nodeController.deserialize(mock);
+        // this.nodeController.deserialize(mock);
         this.createModeButtonDiv();
         this.inputHandlers();
     }

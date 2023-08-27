@@ -37,7 +37,7 @@ export class EditModeButton extends ModeButton implements Drawable {
 
     private switchDeleteMode() {
         this.deleteMode = !this.deleteMode;
-        if(!this.deleteSwitch) return;
+        if (!this.deleteSwitch) return;
         if (this.deleteMode) {
             this.deleteSwitch.textContent = this.switchDeleteText[1];
             this.pad.parent.classList.add("cursor-none");
@@ -87,7 +87,7 @@ export class EditModeButton extends ModeButton implements Drawable {
                 this.endCreation
             );
         }
-        this.resetCreation();
+        if (!this.deleteMode) this.resetCreation();
     }
     handleClick(ev: MouseEvent): void {}
 
@@ -121,7 +121,9 @@ export class EditModeButton extends ModeButton implements Drawable {
     }
 
     private drawEraser(renderer: Renderer) {
-        if (this.deleteMode) {
+        console.log(this.pad.input.mousePosition);
+        
+        if (this.deleteMode && this.pad.input.mousePosition) {
             const pos = this.pad.input.mousePosition;
             renderer.drawScreenImage(
                 this.eraserImage,
