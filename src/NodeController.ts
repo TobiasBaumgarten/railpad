@@ -36,8 +36,11 @@ export default class NodeController {
         const n = this.nodes.get(node.hash());
         let removales: Node[] = [];
         n?.neighbors.forEach((neigVec) => {
-            const neig = this.nodes.get(neigVec.hash());
+            const pos = n.add(neigVec)
+            const neig = this.nodes.get(pos.hash());
+            
             neig?.removeNeighbor(n);
+            
             if (neig != undefined && neig.neighbors.length == 0)
                 removales.push(neig);
         });
@@ -62,13 +65,11 @@ export default class NodeController {
     }
 
     private collectNodes(start: Vector, end: Vector): Vector[] | null {
-        // const Vstart = Vector.fromPosition(start);
-        // const Vend = Vector.fromPosition(end);
         const base = start.sub(end);
         // There have to be a check if the base is diagonal or horizontal!!!!
         if (!(base.isHorizontal || base.isDiagonal)) return null;
         if (!base.isInteger) return null;
-
+        
         const normal = base.normal.round();
         let result: Vector[] = [];
 
@@ -114,10 +115,5 @@ export default class NodeController {
 
     draw(renderer: Renderer): void {
         this.nodes.forEach((n) => n.draw(renderer));
-
-        // if (!this.activeCreation) return;
-
-        // debounce(this.setValidColor(), 500);
-        // renderer.drawLine(this.startCreate, this.endCreate, this.validColor);
     }
 }

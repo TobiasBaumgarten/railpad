@@ -19,26 +19,46 @@ export default class Node extends Vector implements Drawable {
         this.lineColor = "#000000";
     }
 
-    addNeighbors(...neighbor: Vector[]) {
-        neighbor.forEach((n) => {
+    addNeighbors(...neighbors: Vector[]) {
+        neighbors.forEach((n) => {
             if (!this.isValidNeighbor(n)) {
                 throw new Error(
                     `The Neighbor (x:${n.x} , y ${n.y}) isn't valid`
                 );
             }
 
+            this.neighbors.push(n.sub(this));
+        });
+    }
+
+    addNeigborsNormal(...neighbors: Vector[]) {
+        neighbors.forEach((n) => {
+            if (!this.isValidNeighbor(n, true)) {
+                throw new Error(
+                    `The Neighbor (x:${n.x} , y ${n.y}) isn't valid`
+                );
+            }
             this.neighbors.push(n);
         });
     }
 
-    removeNeighbor(neighbor: Vector) {
-        const index = this.neighbors.indexOf(neighbor);
-        this.neighbors.splice(index - 1, 1);
+    removeNeighbor(neighbor: Vector, norm = false) {       
+        const neig = norm ? neighbor : neighbor.sub(this);
+        let index = -1
+        for (let i = 0; i <  this.neighbors.length; i++) {
+            if(this.neighbors[i].eq(neig)) {
+                index = i;
+                break;
+            }
+        }
+        this.neighbors.splice(index, 1);
     }
 
-    isValidNeighbor(neighbor: Vector) {
-        const norm = this.sub(neighbor);
-        const norms = this.neighbors.map((n) => this.sub(n));
+    isValidNeighbor(neighbor: Vector, normValue = false) {
+        let norm: Vector;
+        if (!normValue) norm = this.sub(neighbor);
+        else norm = neighbor;
+
         const abs = norm.call(Math.abs);
         // the neighbor have to be a neighbor node
         if (abs.x > 1 || abs.y > 1) return false;
@@ -57,16 +77,19 @@ export default class Node extends Vector implements Drawable {
     }
 
     getSwitchNeighbors(): { a: Vector; b: Vector }[] {
-        const norms = this.neighbors.map((n) => this.sub(n));
+        // const norms = this.neighbors.map((n) => this.sub(n));
         const base = new Vector(1, 0);
         const result: any = [];
+        // Go through every 45° possibility and ...
         for (let times = 0; times <= 7; times++) {
             const rot1 = base.rotate((Math.PI / 4) * times).round();
             const rot2 = base.rotate((Math.PI / 4) * (times + 1)).round();
             if (
-                norms.some((n) => n.eq(rot1)) &&
-                norms.some((n) => n.eq(rot2))
+                // check if both are there
+                this.neighbors.some((n) => n.eq(rot1)) &&
+                this.neighbors.some((n) => n.eq(rot2))
             ) {
+                // when its there, push it in the result array
                 result.push({ a: rot1, b: rot2 });
             }
         }
@@ -79,8 +102,8 @@ export default class Node extends Vector implements Drawable {
         return {
             p: [this.x, this.y],
             n: neighborsSerialized,
-            l: this.lineColor,
-            b: this.backColor,
+            lc: this.lineColor,
+            bc: this.backColor,
         };
     }
 
@@ -93,42 +116,34 @@ export default class Node extends Vector implements Drawable {
         const node = new Node(nodeModel.p[0], nodeModel.p[1]);
         node.neighbors = deNaighbors;
 
-        node.lineColor = nodeModel.l;
-        node.backColor = nodeModel.b;
+        node.lineColor = nodeModel.lc;
+        node.backColor = nodeModel.bc;
         return node;
-    }
-
-    private calcHalfPosition(node: Vector) {
-        return this.add(node).div(2);
     }
 
     draw(renderer: Renderer): void {
         if (this.backColor) {
-            this.neighbors.forEach((node) => {
+            this.neighbors.forEach((neighbor) => {
                 renderer.drawLine(
                     this,
-                    this.calcHalfPosition(node),
+                    this.add(neighbor),
                     this.backColor,
                     THICKNESS
                 );
             });
         }
 
-        this.neighbors.forEach((node) => {
-            renderer.drawLine(
-                this,
-                this.calcHalfPosition(node),
-                this.lineColor
-            );
+        this.neighbors.forEach((neighbor) => {
+            renderer.drawLine(this, this.add(neighbor.div(2)), this.lineColor);
         });
 
         if (this.isSwitch()) {
-            this.getSwitchNeighbors().forEach((s) => {
+            this.getSwitchNeighbors().forEach((swNeig) => {
                 const d = -1 / this.switchLength;
                 renderer.drawTriangle(
                     this,
-                    this.add(s.a.multiply(d)),
-                    this.add(s.b.multiply(d)),
+                    this.add(swNeig.a.multiply(d)),
+                    this.add(swNeig.b.multiply(d)),
                     this.lineColor
                 );
             });
