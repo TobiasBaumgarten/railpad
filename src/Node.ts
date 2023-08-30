@@ -138,18 +138,15 @@ export default class Node extends Vector implements Drawable {
     }
 
     draw(renderer: Renderer): void {
-        if (this.backColor) {
-            this.neighbors.forEach((neighbor) => {
+        this.neighbors.forEach((neighbor) => {
+            if (this.backColor) {
                 renderer.drawLine(
                     this,
-                    this.add(neighbor),
+                    this.add(neighbor.div(2)),
                     this.backColor,
                     THICKNESS
                 );
-            });
-        }
-
-        this.neighbors.forEach((neighbor) => {
+            }
             renderer.drawLine(this, this.add(neighbor.div(2)), this.lineColor);
         });
 
@@ -191,11 +188,7 @@ export default class Node extends Vector implements Drawable {
             }
 
             text += this.description.toString();
-            renderer.drawText(
-                text,
-                this.add(pos.multiply(0.2)),
-                textRot
-            );
+            renderer.drawText(text, this.add(pos.multiply(0.2)), textRot);
         }
     }
 }
