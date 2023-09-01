@@ -113,8 +113,8 @@ export default class {
 
     update() {
         this.renderer.clear(this.renderer.padStyle.backgroundColor);
-        this.drawables.forEach((d) => d.draw(this.renderer));
         this.nodeController.draw(this.renderer);
+        this.drawables.forEach((d) => d.draw(this.renderer));
         this.gridDotView.draw(this.renderer);
     }
 

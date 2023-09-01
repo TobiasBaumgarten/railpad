@@ -4,13 +4,23 @@ import { NodeModel, Drawable } from "./models";
 
 const THICKNESS = 15;
 
+/**
+ * A Node is a point in the grid
+ */
 export default class Node extends Vector implements Drawable {
+    /** The x position in the grid */
     x: number;
+    /** The y position in the grid */
     y: number;
+    /** The neighbors of the node */
     neighbors: Vector[];
+    /** The color of the line */
     lineColor?: string;
+    /** The color of the background */
     backColor?: string;
+    /** The description of the node */
     description?: number;
+    /** The length of the switch */
     switchLength: number = 2.5;
 
     constructor(x: number, y: number) {
@@ -19,6 +29,7 @@ export default class Node extends Vector implements Drawable {
         this.lineColor = "#000000";
     }
 
+    /** Adds neighbors to the node with the grid coordinates*/
     addNeighbors(...neighbors: Vector[]) {
         neighbors.forEach((n) => {
             if (!this.isValidNeighbor(n)) {
@@ -31,6 +42,7 @@ export default class Node extends Vector implements Drawable {
         });
     }
 
+    /** Adds neighbors to the node with the relativ coordinates. example: [-1,0] */
     addNeigborsNormal(...neighbors: Vector[]) {
         neighbors.forEach((n) => {
             if (!this.isValidNeighbor(n, true)) {
@@ -42,6 +54,7 @@ export default class Node extends Vector implements Drawable {
         });
     }
 
+    /** Removes a neighbor from the node */
     removeNeighbor(neighbor: Vector, norm = false) {
         const neig = norm ? neighbor : neighbor.sub(this);
         let index = -1;
@@ -54,6 +67,7 @@ export default class Node extends Vector implements Drawable {
         this.neighbors.splice(index, 1);
     }
 
+    /** Checks if the neighbor is valid */
     isValidNeighbor(neighbor: Vector, normValue = false) {
         let norm: Vector;
         if (!normValue) norm = this.sub(neighbor);
@@ -72,10 +86,12 @@ export default class Node extends Vector implements Drawable {
         return false;
     }
 
+    /** Checks if the node is a switch */
     isSwitch(): boolean {
         return this.neighbors.length > 2;
     }
 
+    /** Returns the switch neighbors */
     getSwitchNeighbors(): { a: Vector; b: Vector }[] {
         // const norms = this.neighbors.map((n) => this.sub(n));
         const base = new Vector(1, 0);
@@ -96,6 +112,10 @@ export default class Node extends Vector implements Drawable {
         return result;
     }
 
+    /**
+     * Serializes the node to a NodeModel
+     * @returns the node as a NodeModel
+     */
     serialize(): NodeModel {
         let neighborsSerialized: number[] = [];
         this.neighbors.forEach((n) => neighborsSerialized.push(n.x, n.y));
@@ -108,6 +128,10 @@ export default class Node extends Vector implements Drawable {
         };
     }
 
+    /** 
+     * Deserializes a NodeModel to a Node
+     * @param nodeModel the NodeModel
+    */
     static deserialize(nodeModel: NodeModel): Node {
         let deNaighbors: Vector[] = [];
         for (let i = 0; i < nodeModel.n.length; i += 2) {
@@ -123,6 +147,7 @@ export default class Node extends Vector implements Drawable {
         return node;
     }
 
+    /** Finds a free space for the text */
     private findFreeSpace4Text(): [Vector, number] {
         let position = new Vector(0, -1);
         const rotation = Math.PI / 4;
@@ -137,6 +162,7 @@ export default class Node extends Vector implements Drawable {
         return [position, rotation];
     }
 
+    /** Draws the node */
     draw(renderer: Renderer): void {
         this.neighbors.forEach((neighbor) => {
             if (this.backColor) {

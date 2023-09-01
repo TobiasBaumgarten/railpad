@@ -1,3 +1,4 @@
+// TODO: Muss noch mal überarbeitet werden
 export class PadStyle {
     backgroundColor: string;
     dotColor: string;

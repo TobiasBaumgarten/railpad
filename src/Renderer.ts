@@ -46,7 +46,9 @@ export default class Renderer {
     ) {
         const s = this.camera.getScreenPosition(start);
         const e = this.camera.getScreenPosition(end);
+        this.ctx.save();
         this.drawScreenLine(s, e, style, lineWidth);
+        this.ctx.restore();
     }
 
     public drawRect(
@@ -118,15 +120,15 @@ export default class Renderer {
     ) {
         if (!this.isVectorOnScreen(start) && !this.isVectorOnScreen(end))
             return;
-        this.ctx.save();
+        // this.ctx.save();
         this.ctx.beginPath();
         this.ctx.lineWidth = lineWitdth;
         this.ctx.moveTo(start.x, start.y);
         this.ctx.lineTo(end.x, end.y);
-        this.ctx.closePath();
         this.ctx.strokeStyle = strokeStyle;
+        this.ctx.closePath();
         this.ctx.stroke();
-        this.ctx.restore();
+        // this.ctx.restore();
     }
 
     public drawScreenDot(radius: number, position: Vector, fillStyle: string) {
@@ -174,7 +176,7 @@ export default class Renderer {
         width: number,
         height: number,
         fillstyle: string
-    ) {      
+    ) {
         this.ctx.save();
         this.ctx.beginPath();
         this.ctx.fillStyle = fillstyle;

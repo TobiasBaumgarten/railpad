@@ -1,3 +1,6 @@
+/**
+ * Data Model of a Node to be saved 
+ */
 export interface NodeModel {
     /** Position */
     p: number[];

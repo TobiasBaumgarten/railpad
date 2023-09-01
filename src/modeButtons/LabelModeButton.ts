@@ -54,7 +54,7 @@ export class LabelModeButton extends ModeButton implements Drawable {
 
     draw(renderer: Renderer) {
         if (this.activeNode) {
-            renderer.drawDot(0.5, this.activeNode, "green");
+            renderer.drawDot(0.5, this.activeNode, "rgba(255,182,193,0.5)");
         }
     }
 }
