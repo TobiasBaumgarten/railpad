@@ -158,8 +158,10 @@ export default class {
             event.preventDefault();
         });
     }
+
 }
 
+// TODO: Rework the Padstyle. The Colors are departed. There could be an Darkmode. 
 const defaultStyle: PadStyle = {
     backgroundColor: "white",
     dotColor: "pink",
