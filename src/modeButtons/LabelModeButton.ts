@@ -2,6 +2,9 @@ import Node from "../Node";
 import Renderer from "../Renderer";
 import { Drawable } from "../models";
 import { ModeButton } from "./ModeButton";
+//@ts-ignore
+import labelSVG from "bundle-text:../assets/label.svg";
+
 
 export class LabelModeButton extends ModeButton implements Drawable {
     activeNode?: Node;
@@ -9,7 +12,8 @@ export class LabelModeButton extends ModeButton implements Drawable {
     inDesk: HTMLInputElement;
 
     constructor(pad) {
-        super(pad, "tags");
+        super(pad);
+        this.button.innerHTML = labelSVG;
         this.controlDiv.innerHTML = `
         <div id="mask">
             <input id="inDesk" type="number"/>

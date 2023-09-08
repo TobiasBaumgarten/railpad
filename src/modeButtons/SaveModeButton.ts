@@ -1,15 +1,17 @@
 import { ModeButton } from "./ModeButton";
 import { download } from "../helper";
+//@ts-ignore
+import disk from "bundle-text:../assets/disk.svg";
 
 export class SaveModeButton extends ModeButton {
-
     constructor(pad) {
-        super(pad,"save")
+        super(pad);
+        this.button.innerHTML = disk;
         this.button.addEventListener("click", (ev) => {
             const content = JSON.stringify(this.pad.nodeController.serialize());
-            download(content, "gleisplan.json", "json")
-            this.setIsActive(false)
-        })
+            download(content, "gleisplan.json", "json");
+            this.setIsActive(false);
+        });
     }
 
     setIsActive(v: boolean) {}

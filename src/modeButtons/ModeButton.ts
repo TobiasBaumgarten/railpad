@@ -5,14 +5,12 @@ import Pad from "../Pad";
  */
 export abstract class ModeButton {
     button: HTMLButtonElement;
-    iconName: string;
     protected _isActive: boolean;
     pad: Pad;
     controlDiv: HTMLDivElement;
 
-    constructor(pad: Pad, iconName: string, isActive = false) {
+    constructor(pad: Pad, isActive = false) {
         this.pad = pad;
-        this.iconName = iconName;
         this.createAButton();
         this.isActive = isActive;
         this.wireHandlers();
@@ -49,7 +47,7 @@ export abstract class ModeButton {
     public setClassName() {
         if (!this.button) return;
         const cNs: string[] = [];
-        cNs.push(`fa-solid fa-${this.iconName}`);
+        cNs.push(`icon`);
         cNs.push(this._isActive ? "active" : "");
         cNs.push("btn");
         this.button.className = cNs.join(" ");

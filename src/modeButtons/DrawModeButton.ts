@@ -20,7 +20,7 @@ export class PaintModeButton extends ModeButton {
     switchLineText = ["Linie", "Hintergrund"];
 
     constructor(pad: Pad) {
-        super(pad, "brush");
+        super(pad);
         this.controlDiv.innerHTML = myTemplate;
 
         // picker

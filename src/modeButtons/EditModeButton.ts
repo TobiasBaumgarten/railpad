@@ -3,7 +3,10 @@ import Renderer from "../Renderer";
 import { Vector } from "../Vector";
 import { Drawable } from "../models";
 import { ModeButton } from "./ModeButton";
-// import eraserImage from ".././resources/eraser.png";
+//@ts-ignore
+import thinLine from "bundle-text:../assets/thinLine.svg";
+//@ts-ignore
+import thickLine from "bundle-text:../assets/thickLine.svg";
 
 /**
  * Erzeugt, behinhaltet und vorallem controlt den Button für den Editiermodus und den Editermodus.
@@ -19,7 +22,9 @@ export class EditModeButton extends ModeButton implements Drawable {
     eraserImage: HTMLImageElement;
 
     constructor(pad: Pad) {
-        super(pad, "pen", false);
+        super(pad,false);
+        this.button.innerHTML = thinLine;
+
         this.deleteSwitch = Object.assign(document.createElement("button"), {
             className: "btn",
             textContent: this.switchDeleteText[0],
@@ -30,7 +35,7 @@ export class EditModeButton extends ModeButton implements Drawable {
         this.controlDiv.appendChild(this.deleteSwitch);
         this.eraserImage = new Image();
         this.eraserImage.src = new URL(
-            "../resources/eraser.png",
+            "../assets/eraser.png",
             import.meta.url
         ).toString();
     }

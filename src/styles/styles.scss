@@ -1,6 +1,11 @@
 // @import "~bootstrap/scss/bootstrap";
-@import "fontawesome/css/fontawesome.css";
-@import "fontawesome/css/solid.css";
+// @import "fontawesome/css/fontawesome.css";
+// @import "fontawesome/css/solid.css";
+
+.icon {
+    height: 35px;
+    width: 35px;
+}
 
 #app {
     width: 100%;
@@ -61,7 +66,7 @@ input.btn {
     width: 80px;
     margin: auto;
     position: absolute;
-    top: 30px;
+    top: 50px;
     left: 0;
 }
 
