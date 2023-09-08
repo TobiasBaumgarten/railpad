@@ -1,14 +1,17 @@
 import Pad from "../Pad";
 import Node from "../Node";
 import { ModeButton } from "./ModeButton";
+import { Colorpicker } from "../Colorpicker"
 // @ts-ignore
 import myTemplate from "bundle-text:./DrawModePallet.html";
+import colorpallet from "../assets/colorpallet.json"
 
 /**
  * Contains, create the PaintMode Button and especially handels the paint mode
  */
 export class PaintModeButton extends ModeButton {
     picker: HTMLInputElement;
+    colorPicker: Colorpicker
     color: string = "rgb(0,0,0)";
     controlDiv: HTMLDivElement;
     switchDelete: HTMLButtonElement;
@@ -25,10 +28,15 @@ export class PaintModeButton extends ModeButton {
 
         // picker
         this.picker = this.controlDiv.querySelector("#picker")!;
-        this.picker.value = this.color;
-        this.picker.addEventListener("change", (ev) => {
-            this.color = this.picker.value;
-        });
+        this.colorPicker = new Colorpicker(this.picker, colorpallet);
+        this.colorPicker.onChange.add((_, color) => {
+            console.log(color);
+        })
+        // this.picker = this.controlDiv.querySelector("#picker")!;
+        // this.picker.value = this.color;
+        // this.picker.addEventListener("change", (ev) => {
+        //     this.color = this.picker.value;
+        // });
 
         // Delete switch
         this.switchDelete = this.controlDiv.querySelector("#switchDelete")!;
@@ -60,13 +68,13 @@ export class PaintModeButton extends ModeButton {
             node.lineColor = this.color;
         }
         console.log(node.backColor);
-        
+
     }
 
-    setIsActive(v: boolean) {}
+    setIsActive(v: boolean) { }
 
-    handleMouseDown(ev: MouseEvent): void {}
-    handleMouseUp(ev: MouseEvent): void {}
+    handleMouseDown(ev: MouseEvent): void { }
+    handleMouseUp(ev: MouseEvent): void { }
     handleClick(ev: MouseEvent): void {
         const selected = this.pad.gridDotView.selected();
         if (!selected) return;
@@ -74,6 +82,6 @@ export class PaintModeButton extends ModeButton {
         if (!node) return;
         this.changeColor(node);
     }
-    handleMove(ev: MouseEvent): void {}
-    handleWheel(ev: WheelEvent): void {}
+    handleMove(ev: MouseEvent): void { }
+    handleWheel(ev: WheelEvent): void { }
 }

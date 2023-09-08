@@ -1,0 +1,23 @@
+.colorpicker-button {
+    width: 20px;
+    height: 20px;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    cursor: pointer;
+}
+
+.colorpicker-dropdown {
+    display: none;
+    position: absolute;
+    border: 1px solid #ccc;
+    padding: 1px;
+    background-color: #fff;
+}
+
+.colorpicker-dropdown .color {
+    width: 15px;
+    height: 15px;
+    margin: 2px;
+    cursor: pointer;
+    display: inline-block;
+}
