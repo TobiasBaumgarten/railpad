@@ -1,20 +1,29 @@
 {
-  "name": "railpad",
-  "version": "0.0.1",
-  "description": "A Program to create a scheme of a Rail routing",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "serve": "npx parcel index.html",
-    "docs": "npx docsify serve docs"
-  },
-  "author": "Tobias Baumgarten",
-  "license": "MIT",
-  "devDependencies": {
-    "@parcel/transformer-inline-string": "^2.9.3",
-    "@parcel/transformer-sass": "^2.9.3",
-    "docsify-cli": "^4.4.4",
-    "parcel": "^2.9.3"
-  },
-  "dependencies": {
-  }
+    "name": "railpad",
+    "version": "0.0.1",
+    "description": "A Program to create a scheme of a Rail routing",
+    "source": "src/Pad.ts",
+    "main": "dist/pad.js",
+    "module": "dist/padModule.js",
+    "targets": {
+        "main": {
+            "optimize": true
+        }
+    },
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "build": "npx parcel build",
+        "serve": "npx parcel index.html --dist-dir dev-dist",
+        "docs": "npx docsify serve docs"
+    },
+    "author": "Tobias Baumgarten",
+    "license": "MIT",
+    "devDependencies": {
+        "@parcel/transformer-inline-string": "^2.9.3",
+        "@parcel/transformer-sass": "^2.9.3",
+        "@parcel/transformer-typescript-types": "^2.9.3",
+        "docsify-cli": "^4.4.4",
+        "parcel": "^2.9.3",
+        "typescript": "^5.2.2"
+    }
 }
