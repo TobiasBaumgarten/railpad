@@ -4,9 +4,9 @@ import { Vector } from "../Vector";
 import { Drawable } from "../models";
 import { ModeButton } from "./ModeButton";
 //@ts-ignore
-import thinLine from "bundle-text:../assets/thinLine.svg";
+import editIcon from "bundle-text:../assets/icons/edit.svg";
 //@ts-ignore
-import thickLine from "bundle-text:../assets/thickLine.svg";
+import deleteIcon from "bundle-text:../assets/icons/delete.svg";
 
 /**
  * Erzeugt, behinhaltet und vorallem controlt den Button für den Editiermodus und den Editermodus.
@@ -16,23 +16,38 @@ export class EditModeButton extends ModeButton implements Drawable {
     startCreation: Vector | undefined;
     endCreation: Vector | undefined;
     validColor: string;
-    deleteSwitch: HTMLButtonElement;
-    switchDeleteText = ["Zeichnen", "Löschen"];
+    deleteButton: HTMLButtonElement;
+
     deleteMode: boolean = false;
     eraserImage: HTMLImageElement;
+    editButton: HTMLButtonElement;
 
     constructor(pad: Pad) {
-        super(pad,false);
-        this.button.innerHTML = thinLine;
+        super(pad, false);
+        this.button.innerHTML = editIcon;
 
-        this.deleteSwitch = Object.assign(document.createElement("button"), {
-            className: "btn",
-            textContent: this.switchDeleteText[0],
+        // create delete button
+        this.deleteButton = Object.assign(document.createElement("button"));
+        this.deleteButton.innerHTML = deleteIcon;
+        this.deleteButton.classList.add("icon", "delete");
+        this.deleteButton.addEventListener("click", () => {
+            if(this.deleteMode) return;            
+            this.switchDeleteMode();
         });
-        this.deleteSwitch.addEventListener("click", () =>
-            this.switchDeleteMode()
-        );
-        this.controlDiv.appendChild(this.deleteSwitch);
+        this.addControl(this.deleteButton);
+
+        // create edit button
+        this.editButton = Object.assign(document.createElement("button"));
+        this.editButton.innerHTML = editIcon;
+        this.editButton.classList.add("icon");
+        this.editButton.addEventListener("click", () => {
+            if(!this.deleteMode) return;
+            this.switchDeleteMode();
+        });
+        this.addControl(this.editButton);
+
+
+
         this.eraserImage = new Image();
         this.eraserImage.src = new URL(
             "../assets/eraser.png",
@@ -41,14 +56,18 @@ export class EditModeButton extends ModeButton implements Drawable {
     }
 
     private switchDeleteMode() {
+        console.log("switch delete mode");
+        
         this.deleteMode = !this.deleteMode;
-        if (!this.deleteSwitch) return;
+        if (!this.deleteButton) return;
         if (this.deleteMode) {
-            this.deleteSwitch.textContent = this.switchDeleteText[1];
             this.pad.parent.classList.add("cursor-none");
+            this.deleteButton.classList.add("active");
+            this.editButton.classList.remove("active");
         } else {
-            this.deleteSwitch.textContent = this.switchDeleteText[0];
             this.pad.parent.classList.remove("cursor-none");
+            this.deleteButton.classList.remove("active");
+            this.editButton.classList.add("active");
         }
     }
 
@@ -94,7 +113,7 @@ export class EditModeButton extends ModeButton implements Drawable {
         }
         if (!this.deleteMode) this.resetCreation();
     }
-    handleClick(ev: MouseEvent): void {}
+    handleClick(ev: MouseEvent): void { }
 
     handleMove(ev: MouseEvent): void {
         const selected = this.pad.gridDotView.selected();
@@ -112,7 +131,7 @@ export class EditModeButton extends ModeButton implements Drawable {
         }
     }
 
-    handleWheel(ev: WheelEvent): void {}
+    handleWheel(ev: WheelEvent): void { }
 
     draw(renderer: Renderer): void {
         this.drawEraser(renderer);

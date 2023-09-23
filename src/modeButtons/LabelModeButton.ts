@@ -3,7 +3,7 @@ import Renderer from "../Renderer";
 import { Drawable } from "../models";
 import { ModeButton } from "./ModeButton";
 //@ts-ignore
-import labelSVG from "bundle-text:../assets/label.svg";
+import labelSVG from "bundle-text:../assets/icons/label.svg";
 
 
 export class LabelModeButton extends ModeButton implements Drawable {

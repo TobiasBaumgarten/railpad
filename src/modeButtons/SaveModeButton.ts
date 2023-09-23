@@ -1,7 +1,7 @@
 import { ModeButton } from "./ModeButton";
 import { download } from "../helper";
 //@ts-ignore
-import disk from "bundle-text:../assets/disk.svg";
+import disk from "bundle-text:../assets/icons/save.svg";
 
 export class SaveModeButton extends ModeButton {
     constructor(pad) {

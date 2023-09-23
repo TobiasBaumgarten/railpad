@@ -4,6 +4,8 @@ import { ModeButton } from "./ModeButton";
 import { Colorpicker } from "../Colorpicker"
 // @ts-ignore
 import myTemplate from "bundle-text:./DrawModePallet.html";
+// @ts-ignore
+import drawIcon from "bundle-text:../assets/icons/paint.svg";
 import colorpallet from "../assets/colorpallet.json"
 
 /**
@@ -15,7 +17,8 @@ export class PaintModeButton extends ModeButton {
     color: string = "rgb(0,0,0)";
     controlDiv: HTMLDivElement;
     switchDelete: HTMLButtonElement;
-    switchLine: HTMLButtonElement;
+    switchthinLine: HTMLButtonElement;
+    switchthickLine: HTMLButtonElement;
     deleteMode: boolean = false;
     backLineMode: boolean = false;
 
@@ -26,38 +29,41 @@ export class PaintModeButton extends ModeButton {
         super(pad);
         this.controlDiv.innerHTML = myTemplate;
 
-        // picker
+        this.button.innerHTML = drawIcon;
+
+        //picker 
         this.picker = this.controlDiv.querySelector("#picker")!;
-        this.colorPicker = new Colorpicker(this.picker, colorpallet);
+        this.colorPicker = new Colorpicker(this.picker as HTMLButtonElement, this.controlDiv, colorpallet);
         this.colorPicker.onChange.add((_, color) => {
-            console.log(color);
+            this.color = color;
         })
-        // this.picker = this.controlDiv.querySelector("#picker")!;
-        // this.picker.value = this.color;
-        // this.picker.addEventListener("change", (ev) => {
-        //     this.color = this.picker.value;
-        // });
 
-        // Delete switch
-        this.switchDelete = this.controlDiv.querySelector("#switchDelete")!;
-        this.switchDelete.textContent = this.switchDeleteText[0];
+
+        //Delete switch
+        this.switchDelete = this.controlDiv.querySelector("#delete")!;
         this.switchDelete.addEventListener("click", (ev) => {
-            this.deleteMode = !this.deleteMode;
-            const index = this.deleteMode ? 1 : 0;
-            this.switchDelete.textContent = this.switchDeleteText[index];
+            this.deleteMode = true;
+            this.switchDelete.classList.add("active");
         });
-        this.switchDelete.style.visibility = "hidden";
 
-        // Line switch
-        this.switchLine = this.controlDiv.querySelector("#switchLine")!;
-        this.switchLine.textContent = this.switchLineText[0];
-        this.switchLine.addEventListener("click", (ev) => {
-            this.backLineMode = !this.backLineMode;
-            const index = this.backLineMode ? 1 : 0;
-            this.switchLine.textContent = this.switchLineText[index];
-            this.switchDelete.style.visibility = this.backLineMode
-                ? "visible"
-                : "hidden";
+        // thick line switch
+        this.switchthickLine = this.controlDiv.querySelector("#thick")!;
+        this.switchthickLine.addEventListener("click", (ev) => {
+            this.deleteMode = false;
+            this.backLineMode = true;
+            this.switchthickLine.classList.add("active");
+            this.switchthinLine.classList.remove("active");
+            this.switchDelete.classList.remove("active");
+        });
+    
+        // thin line switch
+        this.switchthinLine = this.controlDiv.querySelector("#thin")!;
+        this.switchthinLine.addEventListener("click", (ev) => {
+            this.deleteMode = false;
+            this.backLineMode = false;
+            this.switchthinLine.classList.add("active");
+            this.switchthickLine.classList.remove("active");
+            this.switchDelete.classList.remove("active");
         });
     }
 

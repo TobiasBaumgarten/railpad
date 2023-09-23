@@ -2,6 +2,9 @@
 // @import "fontawesome/css/fontawesome.css";
 // @import "fontawesome/css/solid.css";
 @import "./color-picker.css";
+
+$primary: #019606;
+
 .icon {
     height: 35px;
     width: 35px;
@@ -31,19 +34,60 @@
     left: 0;
 }
 
-.btn {
-    background-color: #019606; /* Green */
-    border: none;
+.btn-group button {
+    background-color: $primary;
+    border: 1px solid #017905;
     color: white;
-    padding: 5px 8px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
+    padding: 5px 4px;
+    cursor: pointer;
+    float: left;
 }
 
-.btn:hover {
-    background-color: #4f6b02;
+.btn-group button:first-child {
+    border-top-left-radius: 5;
+    /* Abgerundete obere linke Ecke */
+    border-bottom-left-radius: 5;
+    /* Abgerundete untere linke Ecke */
+}
+
+.btn-group button:last-child {
+    border-top-right-radius: 5;
+    /* Abgerundete obere rechte Ecke */
+    border-bottom-right-radius: 5;
+    /* Abgerundete untere rechte Ecke */
+}
+
+.btn-group .vertical button {
+    float: none;
+    display: block;
+    width: 98%;
+    text-align: left;
+}
+
+.btn-group button:not(:last-child) {
+    border-right: none;
+    /* Prevent double borders */
+}
+
+/* Clear floats (clearfix hack) */
+.btn-group:after {
+    content: "";
+    clear: both;
+    display: table;
+}
+
+/* Add a background color on hover */
+.btn-group button:hover {
+    background-color: #3e8e41;
+}
+
+.btn-group>.active {
+    background-color: #016304;
+}
+
+.btn-group>.active.delete {
+    background-color: red;
+    border-color: red;
 }
 
 input.btn {
@@ -51,31 +95,33 @@ input.btn {
     margin: 0;
 }
 
-.btn.active {
-    background-color: #015a04;
-    border: none;
-}
 .overlay {
     position: absolute;
     top: 0;
-    left: 0;
     z-index: 10;
 }
 
+.overlay.main {
+    left: 70px;
+}
+
 .controlDiv {
-    width: 80px;
+    width: 55px;
     margin: auto;
     position: absolute;
-    top: 50px;
+    top: 70px;
     left: 0;
+}
+
+.controlDiv button:first-child {
+    border-radius: 5 5 0 0;
+}
+
+.controlDiv button:last-child {
+    border-radius: 0 0 5 5;
 }
 
 .hidden {
     display: none;
 }
 
-
-.controlDiv > .btn {
-    width: 100px;
-    margin-top: 2;
-}

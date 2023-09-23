@@ -16,10 +16,14 @@ export abstract class ModeButton {
         this.wireHandlers();
 
         this.controlDiv = Object.assign(document.createElement("div"), {
-            classList: ["controlDiv hidden"],
+            classList: ["controlDiv hidden btn-group vertical"],
         });
         this.pad.parent.appendChild(this.controlDiv)
         this.resetVisibility();
+    }
+
+    public get isActive(): boolean {
+        return this._isActive;
     }
     public set isActive(v: boolean) {
         this._isActive = v;
@@ -28,37 +32,35 @@ export abstract class ModeButton {
         this.setIsActive(v);
     }
 
+    public addControl(control: HTMLElement | any) { 
+        this.controlDiv.appendChild(control); 
+    }
+
+
     abstract setIsActive(v: boolean);
 
     protected resetVisibility() {
         if (this.controlDiv == undefined) return;
-        if(this._isActive) {
+        if (this._isActive) {
             this.controlDiv.classList.remove("hidden");
         }
-        else{
+        else {
             this.controlDiv.classList.add("hidden");
         }
     }
 
-    public get isActive(): boolean {
-        return this._isActive;
-    }
+
 
     public setClassName() {
         if (!this.button) return;
         const cNs: string[] = [];
         cNs.push(`icon`);
         cNs.push(this._isActive ? "active" : "");
-        cNs.push("btn");
         this.button.className = cNs.join(" ");
     }
 
     public get className(): string {
         return this.button?.className;
-    }
-
-    public test() {
-        console.log("HEY");
     }
 
     private createAButton() {
